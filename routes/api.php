@@ -15,6 +15,7 @@ Route::group(['prefix' => 'auth'], function ($router) {
 
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
+    Route::post('verifyemail', [AuthController::class, 'verifyEmail']);
 
 });
 Route::middleware(['auth:api'])->group(function () {
