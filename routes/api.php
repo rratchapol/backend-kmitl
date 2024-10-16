@@ -9,6 +9,7 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\PreorderController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ImageController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
 
@@ -63,4 +64,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('categories', [CategoryController::class, 'store']); // เพิ่ม category ใหม่
     Route::put('categories/{id}', [CategoryController::class, 'update']); // แก้ไข category
     Route::delete('categories/{id}', [CategoryController::class, 'destroy']); // ลบ category
+
+
+    Route::post('/uploadimage', [ImageController::class, 'store']);
+
 });
