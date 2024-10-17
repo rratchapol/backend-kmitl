@@ -11,6 +11,24 @@ use Illuminate\Support\Facades\Mail;
 class AuthController extends Controller
 {
 
+     /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Register a new user",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             required={"name", "email", "password", "password_confirmation"},
+     *             @OA\Property(property="name", type="string", format="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Registration successful"),
+     *     @OA\Response(response=400, description="Invalid input")
+     * )
+     */
     public function register(Request $request)
     {
         $validatedData = $request->validate([
@@ -19,7 +37,7 @@ class AuthController extends Controller
             "password" => "required|string|min:6|confirmed",
         ]);
 
-        $verificationCode = rand(1000, 9999); // สุ่มรหัส 4 หลัก
+        $verificationCode = rand(0001, 9999); // สุ่มรหัส 4 หลัก
 
         $user = User::create([
             'name' => $validatedData['name'],
@@ -38,6 +56,24 @@ class AuthController extends Controller
         ]);
     }
 
+
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Login a user",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Login successful"),
+     *     @OA\Response(response=403, description="Email not verified"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function login()
     {
         $credentials = request(['email', 'password']);
@@ -71,6 +107,15 @@ class AuthController extends Controller
     }
 
 
+     /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Logout a user",
+     *     tags={"Authentication"},
+     *     @OA\Response(response=200, description="Successfully logged out"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function logout()
     {
         auth()->logout();
@@ -79,12 +124,38 @@ class AuthController extends Controller
     }
 
 
+     /**
+     * @OA\Post(
+     *     path="/api/refresh",
+     *     summary="Refresh access token",
+     *     tags={"Authentication"},
+     *     @OA\Response(response=200, description="Access token refreshed successfully"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
     }
 
 
+    /**
+     * @OA\Post(
+     *     path="/api/verify-email",
+     *     summary="Verify user email",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             required={"user_id", "email", "verification_code"},
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
+     *             @OA\Property(property="verification_code", type="integer", example=1234)
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Email verified successfully"),
+     *     @OA\Response(response=400, description="Invalid verification code")
+     * )
+     */
     protected function respondWithToken($token)
     {
         return response()->json([

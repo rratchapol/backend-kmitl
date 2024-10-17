@@ -4,10 +4,82 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 
 class CustomerController extends Controller
 {
-    // ฟังก์ชันสำหรับเพิ่มลูกค้า
+    /**
+     * @OA\Get(
+     *     path="/api/customers",
+     *     summary="Get a list of customers",
+     *     tags={"Customers"},
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=400, description="Invalid request")
+     * )
+     */
+    public function index(Request $request)
+    {
+        $columns = $request->input('columns', []);
+        $length = $request->input('length', 10);
+        $order = $request->input('order', []);
+        $search = $request->input('search', []);
+        $start = $request->input('start', 0);
+        $page = ($start / $length) + 1;
+
+        $col = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear', 'role'];
+        $orderby = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear', 'role'];
+
+        $customers = Customer::select($col);
+
+        if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
+            $customers->orderBy($orderby[$order[0]['column']], $order[0]['dir']);
+        }
+
+        if (!empty($search['value'])) {
+            $customers->where(function ($query) use ($search, $col) {
+                foreach ($col as $c) {
+                    $query->orWhere($c, 'like', '%' . $search['value'] . '%');
+                }
+            });
+        }
+
+        $d = $customers->paginate($length, ['*'], 'page', $page);
+
+        if ($d->isNotEmpty()) {
+            $d->transform(function ($item, $key) use ($page, $length) {
+                $item->No = ($page - 1) * $length + $key + 1;
+                return $item;
+            });
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'เรียกดูข้อมูลสำเร็จ',
+            'data' => $d
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/customers",
+     *     summary="Create a new customer",
+     *     tags={"Customers"},
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="mobile", type="string"),
+     *             @OA\Property(property="address", type="string"),
+     *             @OA\Property(property="faculty", type="string"),
+     *             @OA\Property(property="department", type="string"),
+     *             @OA\Property(property="classyear", type="string"),
+     *             @OA\Property(property="role", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Customer created successfully"),
+     *     @OA\Response(response=400, description="Invalid input")
+     * )
+     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -20,24 +92,73 @@ class CustomerController extends Controller
             'classyear' => 'required|string|max:4',
             'role' => 'required|string|max:50',
         ]);
-    
-        // เพิ่ม user_id จากผู้ใช้ที่ล็อกอินอยู่
-        $validatedData['user_id'] = auth()->id();
-    
-        $customer = Customer::create($validatedData);
-    
-        return response()->json(['message' => 'Customer created successfully', 'customer' => $customer], 201);
-    }
-    
 
-    // ฟังก์ชันสำหรับแก้ไขลูกค้า
+        $validatedData['user_id'] = auth()->id();
+
+        $customer = Customer::create($validatedData);
+
+        return response()->json($customer, 201);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/customers/{id}",
+     *     summary="Get a specific customer",
+     *     tags={"Customers"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=404, description="Customer not found")
+     * )
+     */
+    public function show($id)
+    {
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+        return response()->json($customer);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="/api/customers/{id}",
+     *     summary="Update a specific customer",
+     *     tags={"Customers"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="mobile", type="string"),
+     *             @OA\Property(property="address", type="string"),
+     *             @OA\Property(property="faculty", type="string"),
+     *             @OA\Property(property="department", type="string"),
+     *             @OA\Property(property="classyear", type="string"),
+     *             @OA\Property(property="role", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Customer updated successfully"),
+     *     @OA\Response(response=404, description="Customer not found"),
+     *     @OA\Response(response=400, description="Invalid input")
+     * )
+     */
     public function update(Request $request, $id)
     {
-        $customer = Customer::findOrFail($id);
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:customers,email,' . $customer->id,
+            'email' => 'required|string|email|max:255|unique:customers,email,' . $id,
             'mobile' => 'required|string|max:15',
             'address' => 'required|string|max:255',
             'faculty' => 'required|string|max:255',
@@ -46,35 +167,41 @@ class CustomerController extends Controller
             'role' => 'required|string|max:50',
         ]);
 
+        $customer = Customer::find($id);
+
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
         $customer->update($validatedData);
 
-        return response()->json(['message' => 'Customer updated successfully', 'customer' => $customer]);
-    }
-
-    // ฟังก์ชันสำหรับลบลูกค้า
-    public function destroy($id)
-    {
-        $customer = Customer::findOrFail($id);
-        $customer->delete();
-
-        return response()->json(['message' => 'Customer deleted successfully']);
-    }
-
-    // ฟังก์ชันสำหรับแสดงรายชื่อลูกค้า
-    public function index()
-    {
-        $customers = Customer::all();
-        return response()->json($customers);
-    }
-
-    // ฟังก์ชันสำหรับแสดงลูกค้ารายละเอียด
-    public function show($id)
-    {
-        $customer = Customer::findOrFail($id);
         return response()->json($customer);
     }
 
-    
-    
-}
+    /**
+     * @OA\Delete(
+     *     path="/api/customers/{id}",
+     *     summary="Delete a specific customer",
+     *     tags={"Customers"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response=200, description="Customer deleted successfully"),
+     *     @OA\Response(response=404, description="Customer not found")
+     * )
+     */
+    public function destroy($id)
+    {
+        $customer = Customer::find($id);
 
+        if (!$customer) {
+            return response()->json(['message' => 'Customer not found'], 404);
+        }
+
+        $customer->delete();
+        return response()->json(['message' => 'Customer deleted successfully']);
+    }
+}

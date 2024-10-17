@@ -1,0 +1,1084 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Category API",
+        "description": "API endpoints for managing categories",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "format": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Registration successful"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login a user",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    },
+                    "403": {
+                        "description": "Email not verified"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout a user",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Successfully logged out"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/refresh": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh access token",
+                "operationId": "2c27d311a2876560fcb5a754b556cdc5",
+                "responses": {
+                    "200": {
+                        "description": "Access token refreshed successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/verify-email": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify user email",
+                "operationId": "f93f0299bec53587ee91dc03d35b9fe9",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "email",
+                                    "verification_code"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "verification_code": {
+                                        "type": "integer",
+                                        "example": 1234
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email verified successfully"
+                    },
+                    "400": {
+                        "description": "Invalid verification code"
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get a list of categories",
+                "operationId": "3f5817a34833d0a1f4af4548dd3aeaba",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Create a new category",
+                "operationId": "71fcad552bb0eaba9fb191fd8d8dcab0",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Category created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/categories/{id}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get a specific category",
+                "operationId": "c68e76d323c008827a9e47398b1583de",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Update a specific category",
+                "operationId": "0e686b2748211cc688333ed705dc111f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "category_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully"
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete a specific category",
+                "operationId": "4c12e22a7f8c617bd83bfa1fdc05428d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category deleted successfully"
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    }
+                }
+            }
+        },
+        "/api/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get a list of customers",
+                "operationId": "2b23ac696cfd81c23807c2c1fd63b0b0",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Create a new customer",
+                "operationId": "428d5533c8386f91d2baf4de69f01468",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "mobile": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "faculty": {
+                                        "type": "string"
+                                    },
+                                    "department": {
+                                        "type": "string"
+                                    },
+                                    "classyear": {
+                                        "type": "string"
+                                    },
+                                    "role": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Customer created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/customers/{id}": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get a specific customer",
+                "operationId": "d51ce35bfe185b82c242dd4443ffba54",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Customer not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Update a specific customer",
+                "operationId": "07a3f33c1373d3c6a97b7d8846d81472",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "mobile": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "faculty": {
+                                        "type": "string"
+                                    },
+                                    "department": {
+                                        "type": "string"
+                                    },
+                                    "classyear": {
+                                        "type": "string"
+                                    },
+                                    "role": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer updated successfully"
+                    },
+                    "404": {
+                        "description": "Customer not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Delete a specific customer",
+                "operationId": "634844e24d72540f608f7fd297f5d8b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer deleted successfully"
+                    },
+                    "404": {
+                        "description": "Customer not found"
+                    }
+                }
+            }
+        },
+        "/api/deals": {
+            "get": {
+                "tags": [
+                    "Deals"
+                ],
+                "summary": "Get a list of deals",
+                "operationId": "f7e426f6a75edf51dea85d09a8ed1c2d",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Deals"
+                ],
+                "summary": "Create a new deal",
+                "operationId": "7742b8aca5f3ace96ef1f79e2585b998",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "buyer_id": {
+                                        "type": "integer"
+                                    },
+                                    "product_id": {
+                                        "type": "integer"
+                                    },
+                                    "qty": {
+                                        "type": "integer"
+                                    },
+                                    "deal_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Deal created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/deals/{id}": {
+            "get": {
+                "tags": [
+                    "Deals"
+                ],
+                "summary": "Get a specific deal",
+                "operationId": "d82ca02ead88b497b75314b20583bcb1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Deal not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Deals"
+                ],
+                "summary": "Update a specific deal",
+                "operationId": "5d2b9fbb26cc77a959cc377b3b82b261",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "buyer_id": {
+                                        "type": "integer"
+                                    },
+                                    "product_id": {
+                                        "type": "integer"
+                                    },
+                                    "qty": {
+                                        "type": "integer"
+                                    },
+                                    "deal_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deal updated successfully"
+                    },
+                    "404": {
+                        "description": "Deal not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Deals"
+                ],
+                "summary": "Delete a specific deal",
+                "operationId": "2186eb3e73a874926faca4151e39ab40",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deal deleted successfully"
+                    },
+                    "404": {
+                        "description": "Deal not found"
+                    }
+                }
+            }
+        },
+        "/api/likes": {
+            "get": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Get a list of likes",
+                "operationId": "297b9c3ea341e74585a2ae193ef6dcee",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Create a new like",
+                "operationId": "511c8161eb44f7b3479a914692d975ee",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userlike_id": {
+                                        "type": "integer"
+                                    },
+                                    "product_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Like created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/likes/{id}": {
+            "get": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Get a specific like",
+                "operationId": "cc6d000adc2ca5c218da958d798e920a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Like not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Update a specific like",
+                "operationId": "4fca184960c72abcfe28c03f60e7e12b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "userlike_id": {
+                                        "type": "integer"
+                                    },
+                                    "product_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Like updated successfully"
+                    },
+                    "404": {
+                        "description": "Like not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Delete a specific like",
+                "operationId": "e02fff678edcb4bc50ab9c57d7e4531d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Like deleted successfully"
+                    },
+                    "404": {
+                        "description": "Like not found"
+                    }
+                }
+            }
+        },
+        "/api/users/{userId}/likes": {
+            "get": {
+                "tags": [
+                    "Likes"
+                ],
+                "summary": "Get likes created by a specific user",
+                "operationId": "ddebfb13a8679a2dacbe18aa6f05926e",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a list of products",
+                "operationId": "1bfaa78d1c2c3848ab8165c5dadcad3e",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "operationId": "e8185e307706e2cd84bbcf5171e2f09d",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "product_name": {
+                                        "type": "string"
+                                    },
+                                    "product_images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "product_qty": {
+                                        "type": "integer"
+                                    },
+                                    "product_price": {
+                                        "type": "number"
+                                    },
+                                    "product_description": {
+                                        "type": "string"
+                                    },
+                                    "product_category": {
+                                        "type": "string"
+                                    },
+                                    "product_type": {
+                                        "type": "string"
+                                    },
+                                    "seller_id": {
+                                        "type": "integer"
+                                    },
+                                    "date_exp": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "condition": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get a specific product",
+                "operationId": "7ab21ddb713501f3d4c2914892c02a21",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update a specific product",
+                "operationId": "6a7e11900844cd85cff66e662b82bd4c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "product_name": {
+                                        "type": "string"
+                                    },
+                                    "product_images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "product_qty": {
+                                        "type": "integer"
+                                    },
+                                    "product_price": {
+                                        "type": "number"
+                                    },
+                                    "product_description": {
+                                        "type": "string"
+                                    },
+                                    "product_category": {
+                                        "type": "string"
+                                    },
+                                    "product_type": {
+                                        "type": "string"
+                                    },
+                                    "seller_id": {
+                                        "type": "integer"
+                                    },
+                                    "date_exp": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "condition": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete a specific product",
+                "operationId": "e80a6ca46716acee6b47ea1ac91663c0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
+        },
+        {
+            "name": "Customers",
+            "description": "Customers"
+        },
+        {
+            "name": "Deals",
+            "description": "Deals"
+        },
+        {
+            "name": "Likes",
+            "description": "Likes"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
+        }
+    ]
+}
