@@ -15,7 +15,7 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id'); // รหัสหมวดหมู่
+            // $table->unsignedBigInteger('category_id'); // รหัสหมวดหมู่
             $table->string('category_name'); // ชื่อหมวดหมู่
             $table->timestamps();
         });

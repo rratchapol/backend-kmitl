@@ -27,7 +27,7 @@ class CustomerController extends Controller
         $page = ($start / $length) + 1;
 
         $col = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear', 'role'];
-        $orderby = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear', 'role'];
+        $orderby = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear','role' ];
 
         $customers = Customer::select($col);
 
@@ -157,26 +157,28 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:customers,email,' . $id,
-            'mobile' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
-            'faculty' => 'required|string|max:255',
-            'department' => 'required|string|max:255',
-            'classyear' => 'required|string|max:4',
-            'role' => 'required|string|max:50',
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:customers,email,' . $id,
+            'mobile' => 'sometimes|required|string|max:15',
+            'address' => 'sometimes|required|string|max:255',
+            'faculty' => 'sometimes|required|string|max:255',
+            'department' => 'sometimes|required|string|max:255',
+            'classyear' => 'sometimes|required|string|max:4',
+            'role' => 'sometimes|required|string|max:50',
         ]);
-
+    
         $customer = Customer::find($id);
-
+    
         if (!$customer) {
             return response()->json(['message' => 'Customer not found'], 404);
         }
-
-        $customer->update($validatedData);
-
+    
+        // รวมข้อมูลเดิมกับข้อมูลใหม่
+        $customer->update(array_merge($customer->toArray(), $validatedData));
+    
         return response()->json($customer);
     }
+    
 
     /**
      * @OA\Delete(

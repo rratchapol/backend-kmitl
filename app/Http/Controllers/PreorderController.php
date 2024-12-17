@@ -56,6 +56,6 @@ class PreorderController extends Controller
         $preorder = Preorder::findOrFail($id);
         $preorder->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Preorder deleted']);
     }
 }

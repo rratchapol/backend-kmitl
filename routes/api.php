@@ -10,12 +10,15 @@ use App\Http\Controllers\PreorderController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\PostController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
 
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('verifyemail', [AuthController::class, 'verifyEmail']);
+    Route::get('customers', [CustomerController::class, 'index']);
+    Route::get('products', [ProductController::class, 'index']);
 
 });
 Route::middleware(['auth:api'])->group(function () {
@@ -65,6 +68,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('categories', [CategoryController::class, 'store']); // เพิ่ม category ใหม่
     Route::put('categories/{id}', [CategoryController::class, 'update']); // แก้ไข category
     Route::delete('categories/{id}', [CategoryController::class, 'destroy']); // ลบ category
+
+
+    Route::get('posts', [PostController::class, 'index']);          // ดู Post ทั้งหมด
+    Route::get('posts/{id}', [PostController::class, 'show']);      // ดู Post ตาม ID
+    Route::post('posts', [PostController::class, 'store']);         // สร้าง Post
+    Route::put('posts/{id}', [PostController::class, 'update']);    // อัปเดต Post
+    Route::delete('posts/{id}', [PostController::class, 'destroy']); // ลบ Post
 
 
     Route::post('/uploadimage', [ImageController::class, 'store']);
