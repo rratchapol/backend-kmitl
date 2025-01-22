@@ -19,8 +19,11 @@ class Product extends Model
         'product_type', 
         'seller_id', 
         'date_exp', 
-        'location', 
-        'condition'
+        'product_location', 
+        'product_condition',
+        'product_years',
+        'product_defect',
+        'tag'
     ];
 
     protected $casts = [
