@@ -195,8 +195,11 @@ class ProductController extends Controller
             'product_type' => 'required|string',
             'seller_id' => 'required|exists:users,id',
             'date_exp' => 'nullable|date',
-            'location' => 'nullable|string',
-            'condition' => 'required|string',
+            'product_location' => 'nullable|string',
+            'product_condition' => 'required|string',
+            'product_defect' => 'nullable|string',
+            'product_years' => 'nullable|string',
+            'tag' => 'required|string'
         ]);
 
         $product->update($validated);
