@@ -115,7 +115,22 @@ class CustomerController extends Controller
      *     @OA\Response(response=404, description="Customer not found")
      * )
      */
-    public function show($id)
+    //หาจาก id login
+    public function show($user_id)
+    {
+        // $customer = Customer::find($id);
+        $customer = Customer::where('user_id', $user_id)->first();
+
+        if (!$customer) {
+            return response()->json(['id' => 'no'], 404);
+        }
+
+        return response()->json($customer);
+    }
+
+
+// หาจาก id ที่สร้างใหม่
+    public function look($id)
     {
         $customer = Customer::find($id);
 
@@ -125,6 +140,7 @@ class CustomerController extends Controller
 
         return response()->json($customer);
     }
+
 
     /**
      * @OA\Put(
