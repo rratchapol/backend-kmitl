@@ -138,6 +138,7 @@ class ProductController extends Controller
             'product_location' => 'nullable|string',
             'product_condition' => 'required|string',
             'product_defect' => 'nullable|string',
+            'product_years' => 'nullable|string',
             'tag' => 'required|string'
         ]);
 
