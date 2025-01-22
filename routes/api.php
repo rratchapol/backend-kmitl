@@ -39,6 +39,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('products', [ProductController::class, 'store']); // เพิ่มสินค้า
     Route::put('products/{id}', [ProductController::class, 'update']); // แก้ไขสินค้า
     Route::delete('products/{id}', [ProductController::class, 'destroy']); // ลบสินค้า
+    Route::get('productsid/{id}', [ProductController::class, 'look']); // แสดงสินค้าตาม ID
+
 
 
     Route::get('deals', [DealController::class, 'index']); // ดู deals ทั้งหมด
@@ -46,6 +48,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('deals', [DealController::class, 'store']); // เพิ่ม deal ใหม่
     Route::put('deals/{id}', [DealController::class, 'update']); // แก้ไข deal
     Route::delete('deals/{id}', [DealController::class, 'destroy']); // ลบ deal
+    Route::get('dealsid/{id}', [DealController::class, 'look']); // ดู deal ตาม id
+
 
 
     Route::get('preorders', [PreorderController::class, 'index']); // ดู preorders ทั้งหมด
@@ -75,6 +79,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('posts', [PostController::class, 'store']);         // สร้าง Post
     Route::put('posts/{id}', [PostController::class, 'update']);    // อัปเดต Post
     Route::delete('posts/{id}', [PostController::class, 'destroy']); // ลบ Post
+    Route::get('postsid/{id}', [PostController::class, 'look']); 
 
 
     Route::post('/uploadimage', [ImageController::class, 'store']);

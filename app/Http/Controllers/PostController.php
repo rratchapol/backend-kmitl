@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\Customer;
+
 class PostController extends Controller
 {
     //
@@ -57,6 +59,7 @@ class PostController extends Controller
         public function store(Request $request)
         {
             $validated = $request->validate([
+                'userpost_id' => 'required|exists:users,id',
                 'image' => 'required|string',
                 'detail' => 'required|string',
                 'category' => 'required|string',
@@ -83,6 +86,22 @@ class PostController extends Controller
             return response()->json($post);
         }
     
+
+        public function look($user_id)
+        {
+            // ค้นหาโพสต์ที่ตรงกับ user_id
+            $posts = Customer::where('user_id', $user_id)->get();
+        
+            // ถ้าไม่พบโพสต์
+            if ($posts->isEmpty()) {
+                return response()->json(['message' => 'No posts found for this user'], 404);
+            }
+        
+            // คืนค่ารายการโพสต์ที่พบ
+            return response()->json($posts);
+        }
+
+
         // อัปเดตข้อมูล Post
         public function update(Request $request, $id)
         {

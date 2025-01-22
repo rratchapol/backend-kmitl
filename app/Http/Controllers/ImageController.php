@@ -11,7 +11,10 @@ class ImageController extends Controller
         // Validate รูปภาพที่อัปโหลด
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'image_path' => 'required|string',
         ]);
+
+        
 
         // จัดเก็บรูปภาพใน storage
         $imagePath = $request->file('image')->store('images', 'public');

@@ -85,6 +85,20 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+
+    public function look(string $seller_id)
+    {
+        // ดึงสินค้าทั้งหมดที่มี seller_id ตรงกับที่ระบุ
+        $products = Product::where('seller_id', $seller_id)->get();
+    
+        // ตรวจสอบว่ามีสินค้าหรือไม่
+        if ($products->isEmpty()) {
+            return response()->json(['message' => 'No products found for this seller'], 404);
+        }
+    
+        return response()->json($products);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/products",
@@ -121,8 +135,9 @@ class ProductController extends Controller
             'product_type' => 'required|string',
             'seller_id' => 'required|exists:users,id',
             'date_exp' => 'nullable|date',
-            'location' => 'nullable|string',
-            'condition' => 'required|string',
+            'product_location' => 'nullable|string',
+            'product_condition' => 'required|string',
+            'product_defect' => 'nullable|string',
         ]);
 
         $product = Product::create($validated);

@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('userpost_id');  // ผู้ที่กด like
             $table->string('image');          // URL หรือชื่อไฟล์รูปภาพ
             $table->text('detail');           // รายละเอียด
             $table->string('category');       // หมวดหมู่
             $table->string('tag');            // แท็ก
             $table->string('price');  // ราคา
             $table->timestamps();
+
+            $table->foreign('userpost_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 

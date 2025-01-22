@@ -121,6 +121,8 @@ class CustomerController extends Controller
         // $customer = Customer::find($id);
         $customer = Customer::where('user_id', $user_id)->first();
 
+        
+
         if (!$customer) {
             return response()->json(['id' => 'no'], 404);
         }
