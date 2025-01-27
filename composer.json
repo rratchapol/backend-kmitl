@@ -6,11 +6,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "darkaonline/l5-swagger": "^8.6",
         "kreait/laravel-firebase": "*",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "pusher/pusher-php-server": "^7.2",
         "symfony/http-client": "^7.1",
         "symfony/mailgun-mailer": "^7.1",
         "tymon/jwt-auth": "^2.1"

@@ -11,6 +11,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ChatController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
 
@@ -83,5 +84,11 @@ Route::middleware(['auth:api'])->group(function () {
 
 
     Route::post('/uploadimage', [ImageController::class, 'store']);
+
+
+    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+    Route::get('/chat/fetch/{buyer_id}/{seller_id}', [ChatController::class, 'fetchMessages']);
+    Route::post('/chat', [ChatController::class, 'store']);
+
 
 });
