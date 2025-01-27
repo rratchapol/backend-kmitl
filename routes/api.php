@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\TagController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
 
@@ -81,6 +82,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('posts/{id}', [PostController::class, 'update']);    // อัปเดต Post
     Route::delete('posts/{id}', [PostController::class, 'destroy']); // ลบ Post
     Route::get('postsid/{id}', [PostController::class, 'look']); 
+
+
+    Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
+    Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
+    Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
+    Route::put('/tags/{id}', [TagController::class, 'update']); // แก้ไขแท็ก
+    Route::delete('/tags/{id}', [TagController::class, 'destroy']); // ลบแท็ก
 
 
     Route::post('/uploadimage', [ImageController::class, 'store']);
