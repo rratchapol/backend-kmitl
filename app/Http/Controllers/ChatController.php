@@ -31,6 +31,25 @@ class ChatController extends Controller
         return response()->json(['success' => true, 'chat' => $chat]);
     }
 
+
+    public function getUsersInConversation($user_id)
+    {
+        $chats = Chat::where('buyer_id', $user_id)
+            ->orWhere('seller_id', $user_id)
+            ->get();
+    
+        // หาผู้ใช้ที่สนทนาด้วย
+        $user_ids = $chats->map(function($chat) use ($user_id) {
+            return $chat->buyer_id == $user_id ? $chat->seller_id : $chat->buyer_id;
+        });
+    
+        // ลบค่าซ้ำและใช้ values() เพื่อให้ข้อมูลเป็น array ธรรมดา
+        $user_ids = $user_ids->unique()->values();
+    
+        return response()->json($user_ids);
+    }
+    
+
     public function fetchMessages($buyer_id, $seller_id)
     {
         $chats = Chat::where('buyer_id', $buyer_id)

@@ -89,6 +89,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/chat/send', [ChatController::class, 'sendMessage']);
     Route::get('/chat/fetch/{buyer_id}/{seller_id}', [ChatController::class, 'fetchMessages']);
     Route::post('/chat', [ChatController::class, 'store']);
+    Route::post('/seechat/{user_id}', [ChatController::class, 'getUsersInConversation']);
 
 
 });
