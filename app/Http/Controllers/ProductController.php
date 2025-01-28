@@ -17,47 +17,121 @@ class ProductController extends Controller
      *     @OA\Response(response=400, description="Invalid request")
      * )
      */
+    // public function index(Request $request)
+    // {
+    //     $columns = $request->input('columns', []);
+    //     $length = $request->input('length', 10);
+    //     $order = $request->input('order', []);
+    //     $search = $request->input('search', []);
+    //     $start = $request->input('start', 0);
+    //     $page = ($start / $length) + 1;
+
+    //     $col = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'location', 'condition'];
+    //     $orderby = ['id', 'product_name', 'product_qty', 'product_price' , 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'location', 'condition'];
+
+    //     $products = Product::select($col);
+
+    //     if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
+    //         $products->orderBy($orderby[$order[0]['column']], $order[0]['dir']);
+    //     }
+
+    //     if (!empty($search['value'])) {
+    //         $products->where(function ($query) use ($search, $col) {
+    //             foreach ($col as $c) {
+    //                 $query->orWhere($c, 'like', '%' . $search['value'] . '%');
+    //             }
+    //         });
+    //     }
+
+    //     $d = $products->paginate($length, ['*'], 'page', $page);
+
+    //     if ($d->isNotEmpty()) {
+    //         $d->transform(function ($item, $key) use ($page, $length) {
+    //             $item->No = ($page - 1) * $length + $key + 1;
+    //             return $item;
+    //         });
+    //     }
+
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'message' => 'เรียกดูข้อมูลสำเร็จ',
+    //         'data' => $d
+    //     ]);
+    // }
+
+
     public function index(Request $request)
-    {
-        $columns = $request->input('columns', []);
-        $length = $request->input('length', 10);
-        $order = $request->input('order', []);
-        $search = $request->input('search', []);
-        $start = $request->input('start', 0);
-        $page = ($start / $length) + 1;
+{
+    $columns = $request->input('columns', []);
+    $length = $request->input('length', 10);
+    $order = $request->input('order', []);
+    $search = $request->input('search', []);
+    $start = $request->input('start', 0);
+    $page = ($start / $length) + 1;
 
-        $col = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'location', 'condition'];
-        $orderby = ['id', 'product_name', 'product_qty', 'product_price' , 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'location', 'condition'];
+    $col = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'product_location', 'product_condition', 'product_years', 'product_defect', 'tag'];
+    $orderby = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'product_location', 'product_condition', 'product_years', 'product_defect', 'tag'];
 
-        $products = Product::select($col);
+    $products = Product::select($col);
 
-        if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
-            $products->orderBy($orderby[$order[0]['column']], $order[0]['dir']);
-        }
-
-        if (!empty($search['value'])) {
-            $products->where(function ($query) use ($search, $col) {
-                foreach ($col as $c) {
-                    $query->orWhere($c, 'like', '%' . $search['value'] . '%');
-                }
-            });
-        }
-
-        $d = $products->paginate($length, ['*'], 'page', $page);
-
-        if ($d->isNotEmpty()) {
-            $d->transform(function ($item, $key) use ($page, $length) {
-                $item->No = ($page - 1) * $length + $key + 1;
-                return $item;
-            });
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'เรียกดูข้อมูลสำเร็จ',
-            'data' => $d
-        ]);
+    // กรองตาม column ที่ส่งมา
+    if ($productType = $request->input('product_type', '')) {
+        $products->where('product_type', 'like', "%$productType%");
     }
+
+    if ($productCategory = $request->input('product_category', '')) {
+        $products->where('product_category', 'like', "%$productCategory%");
+    }
+
+    if ($productCondition = $request->input('product_condition', '')) {
+        $products->where('product_condition', 'like', "%$productCondition%");
+    }
+
+    // if ($productPrice = $request->input('product_price', '')) {
+    //     // กรองราคาแบบจากน้อยไปมากหรือตามที่เลือก
+    //     $products->orderBy('product_price', $productPrice);
+    // }
+
+    if ($priceOrder = $request->input('price_order', '')) {
+        // กรองราคาแบบจากน้อยไปมากหรือตามที่เลือก
+        if ($priceOrder == 'asc') {
+            $products->orderBy('product_price', 'asc'); // จากน้อยไปมาก
+        } elseif ($priceOrder == 'desc') {
+            $products->orderBy('product_price', 'desc'); // จากมากไปน้อย
+        }
+    }
+
+    // การจัดเรียงข้อมูลตาม column ที่เลือก
+    if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
+        $products->orderBy($orderby[$order[0]['column']], $order[0]['dir']);
+    }
+
+    // การค้นหาสินค้าทั้งหมดตามคำค้น
+    if (!empty($search['value'])) {
+        $products->where(function ($query) use ($search, $col) {
+            foreach ($col as $c) {
+                $query->orWhere($c, 'like', '%' . $search['value'] . '%');
+            }
+        });
+    }
+
+    // การแสดงผลข้อมูลสินค้า
+    $d = $products->paginate($length, ['*'], 'page', $page);
+
+    if ($d->isNotEmpty()) {
+        $d->transform(function ($item, $key) use ($page, $length) {
+            $item->No = ($page - 1) * $length + $key + 1;
+            return $item;
+        });
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'เรียกดูข้อมูลสำเร็จ',
+        'data' => $d
+    ]);
+}
+
 
     /**
      * @OA\Get(
