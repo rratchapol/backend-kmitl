@@ -130,6 +130,13 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::delete('customer/{id}', [CustomerController::class, 'destroy']); // ลบลูกค้า
 
 
+    Route::get('product', [ProductController::class, 'index']); // แสดงสินค้าทั้งหมด
+    Route::get('product/{id}', [ProductController::class, 'show']); // แสดงสินค้าตาม ID
+    Route::put('product/{id}', [ProductController::class, 'update']); // แก้ไขสินค้า
+    Route::delete('product/{id}', [ProductController::class, 'destroy']); // ลบสินค้า
+    Route::get('productid/{id}', [ProductController::class, 'look']); // แสดงสินค้าตาม ID คนขาย
+
+
     Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
     Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
     Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
