@@ -13,6 +13,8 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\LocationController;
+
 
 Route::group(['prefix' => 'auth'], function ($router) {
 
@@ -89,6 +91,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
     Route::put('/tags/{id}', [TagController::class, 'update']); // แก้ไขแท็ก
     Route::delete('/tags/{id}', [TagController::class, 'destroy']); // ลบแท็ก
+
+    
+    Route::get('/locations', [LocationController::class, 'index']);
+    Route::post('/locations', [LocationController::class, 'store']);
+    Route::get('/locations/{id}', [LocationController::class, 'show']);
+    Route::put('/locations/{id}', [LocationController::class, 'update']);
+    Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
 
 
     Route::post('/uploadimage', [ImageController::class, 'store']);
