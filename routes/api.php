@@ -22,7 +22,7 @@ Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('verifyemail', [AuthController::class, 'verifyEmail']);
-    Route::get('customers', [CustomerController::class, 'index']);
+    // Route::get('customers', [CustomerController::class, 'index']);
     Route::get('products', [ProductController::class, 'index']);
 
 });
@@ -122,6 +122,12 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::get('/admin', [AdminAuthController::class, 'getAllAdmins']);
     Route::get('/admin/{id}', [AdminAuthController::class, 'look']);
     Route::put('/admin/{id}', [AdminAuthController::class, 'updateAdmin']);
+
+
+    Route::get('customer', [CustomerController::class, 'index']); // แสดงรายชื่อลูกค้าทั้งหมด
+    Route::get('customer/{id}', [CustomerController::class, 'show']); // แสดงลูกค้ารายละเอียด
+    Route::put('customer/{id}', [CustomerController::class, 'update']); // แก้ไขลูกค้า
+    Route::delete('customer/{id}', [CustomerController::class, 'destroy']); // ลบลูกค้า
 
 
     Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
