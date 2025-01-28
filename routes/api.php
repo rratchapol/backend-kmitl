@@ -14,6 +14,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\AdminAuthController;
 
 
 Route::group(['prefix' => 'auth'], function ($router) {
@@ -44,7 +45,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('products/{id}', [ProductController::class, 'update']); // แก้ไขสินค้า
     Route::delete('products/{id}', [ProductController::class, 'destroy']); // ลบสินค้า
     Route::get('productsid/{id}', [ProductController::class, 'look']); // แสดงสินค้าตาม ID
-
 
 
     Route::get('deals', [DealController::class, 'index']); // ดู deals ทั้งหมด
@@ -86,15 +86,15 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('postsid/{id}', [PostController::class, 'look']); 
 
 
-    Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
+    Route::get('/tag', [TagController::class, 'index']); // ดูแท็กทั้งหมด
     Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
-    Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
+    Route::get('/tag/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
     Route::put('/tags/{id}', [TagController::class, 'update']); // แก้ไขแท็ก
     Route::delete('/tags/{id}', [TagController::class, 'destroy']); // ลบแท็ก
 
-    
-    Route::get('/locations', [LocationController::class, 'index']);
-    Route::post('/locations', [LocationController::class, 'store']);
+
+    Route::get('/location', [LocationController::class, 'index']);
+    Route::post('/location', [LocationController::class, 'store']);
     Route::get('/locations/{id}', [LocationController::class, 'show']);
     Route::put('/locations/{id}', [LocationController::class, 'update']);
     Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
@@ -108,5 +108,33 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/chat', [ChatController::class, 'store']);
     Route::post('/seechat/{user_id}', [ChatController::class, 'getUsersInConversation']);
 
+
+});
+
+Route::prefix('admin')->group(function () {
+    Route::post('register', [AdminAuthController::class, 'register']);
+    Route::post('login', [AdminAuthController::class, 'login']);
+    Route::middleware('auth:admin_api')->get('profile', [AdminAuthController::class, 'profile']);
+});
+
+Route::middleware(['auth:admin_api'])->group(function () {
+
+    Route::get('/admin', [AdminAuthController::class, 'getAllAdmins']);
+    Route::get('/admin/{id}', [AdminAuthController::class, 'look']);
+    Route::put('/admin/{id}', [AdminAuthController::class, 'updateAdmin']);
+
+
+    Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
+    Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
+    Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
+    Route::put('/tags/{id}', [TagController::class, 'update']); // แก้ไขแท็ก
+    Route::delete('/tags/{id}', [TagController::class, 'destroy']); // ลบแท็ก
+
+
+    Route::get('/locations', [LocationController::class, 'index']);
+    Route::post('/locations', [LocationController::class, 'store']);
+    Route::get('/locations/{id}', [LocationController::class, 'show']);
+    Route::put('/locations/{id}', [LocationController::class, 'update']);
+    Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
 
 });
