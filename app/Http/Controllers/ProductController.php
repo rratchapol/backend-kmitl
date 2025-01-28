@@ -87,11 +87,6 @@ class ProductController extends Controller
         $products->where('product_condition', 'like', "%$productCondition%");
     }
 
-    // if ($productPrice = $request->input('product_price', '')) {
-    //     // กรองราคาแบบจากน้อยไปมากหรือตามที่เลือก
-    //     $products->orderBy('product_price', $productPrice);
-    // }
-
     if ($priceOrder = $request->input('price_order', '')) {
         // กรองราคาแบบจากน้อยไปมากหรือตามที่เลือก
         if ($priceOrder == 'asc') {

@@ -20,11 +20,21 @@ class PostController extends Controller
         $start = $request->input('start', 0);
         $page = ($start / $length) + 1;
 
-        $col = ['id', 'image', 'detail', 'category', 'tag', 'price'];
-        $orderby = ['id', 'image', 'detail', 'category' , 'tag', 'price'];
+        $col = ['id', 'image', 'detail', 'category', 'tag', 'price', 'userpost_id'];
+        $orderby = ['id', 'image', 'detail', 'category' , 'tag', 'price', 'userpost_id'];
 
         // $products = Product::select($col);
         $posts = Post::select($col);
+
+            // กรองตาม column ที่ส่งมา
+        if ($postcategory = $request->input('category', '')) {
+            $posts->where('category', 'like', "%$postcategory%");
+        }
+
+        if ($posttag = $request->input('tag', '')) {
+            $posts->where('tag', 'like', "%$posttag%");
+        }
+
 
         if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
             $posts->orderBy($orderby[$order[0]['column']], $order[0]['dir']);

@@ -137,6 +137,13 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::get('productid/{id}', [ProductController::class, 'look']); // แสดงสินค้าตาม ID คนขาย
 
 
+    Route::get('post', [PostController::class, 'index']);          // ดู Post ทั้งหมด
+    Route::get('post/{id}', [PostController::class, 'show']);      // ดู Post ตาม ID
+    Route::put('post/{id}', [PostController::class, 'update']);    // อัปเดต Post
+    Route::delete('post/{id}', [PostController::class, 'destroy']); // ลบ Post
+    Route::get('postid/{id}', [PostController::class, 'look']); 
+
+
     Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
     Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
     Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
