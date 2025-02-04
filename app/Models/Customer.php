@@ -18,7 +18,8 @@ class Customer extends Model
         'department',
         'classyear',
         'role',
-        'user_id'
+        'user_id',
+        'status'
     ];
 
         // ความสัมพันธ์กับ User

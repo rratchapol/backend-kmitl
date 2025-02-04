@@ -16,6 +16,7 @@ class Post extends Model
         'category',
         'tag',
         'price',
+        'status'
     ];
 
     public function user()

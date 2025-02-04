@@ -18,6 +18,8 @@ class CreateCustomersTable extends Migration
             $table->string('department'); // แผนก
             $table->string('classyear'); // ปีการศึกษา
             $table->string('role'); // บทบาท
+            $table->string('status')->nullable();
+
             $table->timestamps(); // คอลัมน์ created_at และ updated_at
 
             $table->unsignedBigInteger('user_id'); // คอลัมน์ user_id

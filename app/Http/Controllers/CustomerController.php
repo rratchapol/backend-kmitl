@@ -91,6 +91,7 @@ class CustomerController extends Controller
             'department' => 'required|string|max:255',
             'classyear' => 'required|string|max:4',
             'role' => 'required|string|max:50',
+            'status' => 'nullable|string',
         ]);
 
         $validatedData['user_id'] = auth()->id();

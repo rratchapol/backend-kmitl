@@ -15,6 +15,7 @@ class Deal extends Model
         'qty',
         'deal_date',
         'status',
+        'bill'
     ];
 
     public function buyer()

@@ -20,6 +20,8 @@ class CreateDealsTable extends Migration
             $table->integer('qty');
             $table->date('deal_date');
             $table->string('status');
+            $table->string('bill')->nullable();
+
             $table->timestamps();
 
             // Foreign key constraints

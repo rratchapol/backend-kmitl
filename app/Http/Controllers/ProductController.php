@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\CheckProduct;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
 
@@ -168,30 +169,30 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/products",
-     *     summary="Create a new product",
-     *     tags={"Products"},
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             @OA\Property(property="product_name", type="string"),
-     *             @OA\Property(property="product_images", type="array", @OA\Items(type="string")),
-     *             @OA\Property(property="product_qty", type="integer"),
-     *             @OA\Property(property="product_price", type="number"),
-     *             @OA\Property(property="product_description", type="string"),
-     *             @OA\Property(property="product_category", type="string"),
-     *             @OA\Property(property="product_type", type="string"),
-     *             @OA\Property(property="seller_id", type="integer"),
-     *             @OA\Property(property="date_exp", type="string", format="date"),
-     *             @OA\Property(property="location", type="string"),
-     *             @OA\Property(property="condition", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Product created successfully"),
-     *     @OA\Response(response=400, description="Invalid input")
-     * )
-     */
+
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'product_name' => 'required|string',
+    //         'product_images' => 'nullable|array',
+    //         'product_qty' => 'required|integer',
+    //         'product_price' => 'required|numeric',
+    //         'product_description' => 'nullable|string',
+    //         'product_category' => 'required|string',
+    //         'product_type' => 'required|string',
+    //         'seller_id' => 'required|exists:users,id',
+    //         'date_exp' => 'nullable|date',
+    //         'product_location' => 'nullable|string',
+    //         'product_condition' => 'required|string',
+    //         'product_defect' => 'nullable|string',
+    //         'product_years' => 'nullable|string',
+    //         'tag' => 'required|string'
+    //     ]);
+
+    //     $product = Product::create($validated);
+    //     return response()->json($product, 201);
+    // }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -211,41 +212,31 @@ class ProductController extends Controller
             'tag' => 'required|string'
         ]);
 
+        // 🔍 ดึงคำต้องห้ามทั้งหมดจากตาราง checkproducts
+        $forbiddenWords = CheckProduct::pluck('word')->toArray();
+
+        // 📝 รวมข้อความที่ต้องเช็ก
+        $textToCheck = strtolower($validated['product_name'] . ' ' . ($validated['product_description'] ?? ''));
+
+        // ✅ เช็กว่ามีคำต้องห้ามหรือไม่
+        $status = 'ok'; // ค่าเริ่มต้น
+        foreach ($forbiddenWords as $word) {
+            if (str_contains($textToCheck, strtolower($word))) {
+                $status = 'wait';
+                break; // หยุดทันทีถ้าพบคำต้องห้าม
+            }
+        }
+
+        // 🔄 กำหนดค่า status
+        $validated['status'] = $status;
+
+        // 📌 บันทึกข้อมูลลง database
         $product = Product::create($validated);
+
         return response()->json($product, 201);
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/products/{id}",
-     *     summary="Update a specific product",
-     *     tags={"Products"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             @OA\Property(property="product_name", type="string"),
-     *             @OA\Property(property="product_images", type="array", @OA\Items(type="string")),
-     *             @OA\Property(property="product_qty", type="integer"),
-     *             @OA\Property(property="product_price", type="number"),
-     *             @OA\Property(property="product_description", type="string"),
-     *             @OA\Property(property="product_category", type="string"),
-     *             @OA\Property(property="product_type", type="string"),
-     *             @OA\Property(property="seller_id", type="integer"),
-     *             @OA\Property(property="date_exp", type="string", format="date"),
-     *             @OA\Property(property="location", type="string"),
-     *             @OA\Property(property="condition", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Product updated successfully"),
-     *     @OA\Response(response=404, description="Product not found"),
-     *     @OA\Response(response=400, description="Invalid input")
-     * )
-     */
+    
     public function update(Request $request, string $id)
     {
         $product = Product::find($id);

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('category');       // หมวดหมู่
             $table->string('tag');            // แท็ก
             $table->string('price');  // ราคา
+            $table->string('status')->nullable();
+
             $table->timestamps();
 
             $table->foreign('userpost_id')->references('id')->on('users')->onDelete('cascade');

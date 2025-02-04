@@ -23,6 +23,8 @@ class CreateProductsTable extends Migration
             $table->string('product_years')->nullable();
             $table->string('product_defect')->nullable();
             $table->string('tag')->nullable();
+            $table->string('status')->nullable();
+
 
             $table->unsignedBigInteger('seller_id'); // FK กับผู้ขาย
             $table->timestamps();

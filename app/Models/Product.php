@@ -23,7 +23,8 @@ class Product extends Model
         'product_condition',
         'product_years',
         'product_defect',
-        'tag'
+        'tag',
+        'status'
     ];
 
     protected $casts = [
