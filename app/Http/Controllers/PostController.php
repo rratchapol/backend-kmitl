@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use App\Models\CheckProduct;
 use App\Models\Customer;
 
 class PostController extends Controller
@@ -77,10 +78,31 @@ class PostController extends Controller
                 'price' => 'required|numeric',
             ]);
     
-            $post = Post::create($validated);
-    
-            return response()->json($post, 201);
+        // 🔍 ดึงคำต้องห้ามทั้งหมดจากตาราง checkproducts
+        $forbiddenWords = CheckProduct::pluck('word')->toArray();
+
+        // 📝 รวมข้อความที่ต้องเช็ก
+        $textToCheck = strtolower($validated['detail'] . ' ' . ($validated['tag'] ?? ''));
+
+        // ✅ เช็กว่ามีคำต้องห้ามหรือไม่
+        $status = 'ok'; // ค่าเริ่มต้น
+        foreach ($forbiddenWords as $word) {
+            if (str_contains($textToCheck, strtolower($word))) {
+                $status = 'wait';
+                break; // หยุดทันทีถ้าพบคำต้องห้าม
+            }
         }
+
+        // 🔄 กำหนดค่า status
+        $validated['status'] = $status;
+
+        // 📌 บันทึกข้อมูลลง database
+        $post = Post::create($validated);
+
+        return response()->json($post, 201);
+        }
+
+        
     
         // ดูข้อมูล Post ทั้งหมด
         // public function index()
