@@ -26,6 +26,9 @@ class TagController extends Controller
         
             if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
                 $categories->orderBy($orderby[$order[0]['column']], $order[0]['dir']);
+            } else {
+                // ถ้าไม่มีค่าการเรียงลำดับ ให้เรียงตาม id (ค่าใหม่สุดอยู่ล่างสุด)
+                $categories->orderBy('id', 'asc');
             }
         
             if (!empty($search['value'])) {

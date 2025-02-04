@@ -9,6 +9,11 @@ class LocationController extends Controller
 {
     //
 
+    public function indexs()
+    {
+        return response()->json(Location::all());
+    }
+
     public function index(Request $request)
     {
         $columns = $request->input('columns', []);

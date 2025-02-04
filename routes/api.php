@@ -40,7 +40,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('customers/{id}', [CustomerController::class, 'destroy']); // ลบลูกค้า
 
 
-    Route::get('products', [ProductController::class, 'index']); // แสดงสินค้าทั้งหมด
+    Route::post('getproducts', [ProductController::class, 'index']); // แสดงสินค้าทั้งหมด
     Route::get('products/{id}', [ProductController::class, 'show']); // แสดงสินค้าตาม ID
     Route::post('products', [ProductController::class, 'store']); // เพิ่มสินค้า
     Route::put('products/{id}', [ProductController::class, 'update']); // แก้ไขสินค้า
@@ -48,7 +48,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('productsid/{id}', [ProductController::class, 'look']); // แสดงสินค้าตาม ID
 
 
-    Route::get('deals', [DealController::class, 'index']); // ดู deals ทั้งหมด
+    Route::post('getdeals', [DealController::class, 'index']); // ดู deals ทั้งหมด
     Route::get('deals/{id}', [DealController::class, 'show']); // ดู deal ตาม id
     Route::post('deals', [DealController::class, 'store']); // เพิ่ม deal ใหม่
     Route::put('deals/{id}', [DealController::class, 'update']); // แก้ไข deal
@@ -64,7 +64,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('preorders/{id}', [PreorderController::class, 'destroy']); // ลบ preorder
 
 
-    Route::get('likes', [LikeController::class, 'index']); // ดู likes ทั้งหมด
+    Route::post('getlikes', [LikeController::class, 'index']); // ดู likes ทั้งหมด
     Route::get('likes/{id}', [LikeController::class, 'show']); // ดู like ตาม id
     Route::post('likes', [LikeController::class, 'store']); // เพิ่ม like ใหม่
     Route::put('likes/{id}', [LikeController::class, 'update']); // แก้ไข like
@@ -79,7 +79,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('categories/{id}', [CategoryController::class, 'destroy']); // ลบ category
 
 
-    Route::get('posts', [PostController::class, 'index']);          // ดู Post ทั้งหมด
+    Route::post('getposts', [PostController::class, 'index']);          // ดู Post ทั้งหมด
     Route::get('posts/{id}', [PostController::class, 'show']);      // ดู Post ตาม ID
     Route::post('posts', [PostController::class, 'store']);         // สร้าง Post
     Route::put('posts/{id}', [PostController::class, 'update']);    // อัปเดต Post
@@ -87,14 +87,14 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('postsid/{id}', [PostController::class, 'look']); 
 
 
-    Route::get('/tag', [TagController::class, 'index']); // ดูแท็กทั้งหมด
+    Route::post('/gettag', [TagController::class, 'index']); // ดูแท็กทั้งหมด
     Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
     Route::get('/tag/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
     Route::put('/tags/{id}', [TagController::class, 'update']); // แก้ไขแท็ก
     Route::delete('/tags/{id}', [TagController::class, 'destroy']); // ลบแท็ก
 
 
-    Route::get('/location', [LocationController::class, 'index']);
+    Route::get('/location', [LocationController::class, 'indexs']);
     Route::post('/location', [LocationController::class, 'store']);
     Route::get('/locations/{id}', [LocationController::class, 'show']);
     Route::put('/locations/{id}', [LocationController::class, 'update']);
@@ -127,7 +127,7 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::put('/admin/{id}', [AdminAuthController::class, 'updateAdmin']);
 
 
-    Route::get('customer', [CustomerController::class, 'index']); // แสดงรายชื่อลูกค้าทั้งหมด
+    Route::post('customer', [CustomerController::class, 'index']); // แสดงรายชื่อลูกค้าทั้งหมด
     Route::get('customer/{id}', [CustomerController::class, 'show']); // แสดงลูกค้ารายละเอียด
     Route::put('customer/{id}', [CustomerController::class, 'update']); // แก้ไขลูกค้า
     Route::delete('customer/{id}', [CustomerController::class, 'destroy']); // ลบลูกค้า

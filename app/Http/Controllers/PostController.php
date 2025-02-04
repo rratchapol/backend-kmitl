@@ -35,7 +35,12 @@ class PostController extends Controller
             $posts->where('status', 'like', "%$poststatus%");
         }
 
-        if ($postcategory = $request->input('category', '')) {
+        // if ($postcategory = $request->input('category', '')) {
+        //     $posts->where('category', 'like', "%$postcategory%");
+        // }
+
+        if ($request->has('category') && !empty($request->input('category'))) {
+            $postcategory = $request->input('category');
             $posts->where('category', 'like', "%$postcategory%");
         }
 

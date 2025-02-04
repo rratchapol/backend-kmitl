@@ -10,10 +10,59 @@ class CheckProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    // public function index()
+    // {
+    //     return response()->json(CheckProduct::all());
+    // }
+
+    public function index(Request $request)
     {
-        return response()->json(CheckProduct::all());
+        $columns = $request->input('columns', []);
+        $length = $request->input('length', 10);
+        $order = $request->input('order', []);
+        $search = $request->input('search', []);
+        $start = $request->input('start', 0);
+        $page = ($start / $length) + 1;
+    
+        $col = ['id', 'word'];
+        $orderby = ['id', 'word'];
+    
+        $CheckProduct = CheckProduct::select($col);
+    
+        if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
+            $CheckProduct->orderBy($orderby[$order[0]['column']], $order[0]['dir']);
+        } else {
+            // ถ้าไม่มีค่าการเรียงลำดับ ให้เรียงตาม id (ค่าใหม่สุดอยู่ล่างสุด)
+            $CheckProduct->orderBy('id', 'asc');
+        }
+    
+        if (!empty($search['value'])) {
+            $CheckProduct->where(function ($query) use ($search, $col) {
+                foreach ($col as $c) {
+                    $query->orWhere($c, 'like', '%' . $search['value'] . '%');
+                }
+            });
+        }
+    
+        $d = $CheckProduct->paginate($length, ['*'], 'page', $page);
+    
+        if ($d->isNotEmpty()) {
+            $d->transform(function ($item, $key) use ($page, $length) {
+                $item->No = ($page - 1) * $length + $key + 1;
+                return $item;
+            });
+        }
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'เรียกดูข้อมูลสำเร็จ',
+            'data' => $d
+        ]);
     }
+
+
+
+
 
     public function show($id)
     {
