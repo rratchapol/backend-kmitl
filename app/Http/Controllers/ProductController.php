@@ -263,7 +263,8 @@ class ProductController extends Controller
             'product_condition' => 'required|string',
             'product_defect' => 'nullable|string',
             'product_years' => 'nullable|string',
-            'tag' => 'required|string'
+            'tag' => 'required|string',
+            "status" => "required|string"
         ]);
 
         $product->update($validated);

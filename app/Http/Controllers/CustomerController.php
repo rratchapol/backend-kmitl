@@ -26,8 +26,8 @@ class CustomerController extends Controller
         $start = $request->input('start', 0);
         $page = ($start / $length) + 1;
 
-        $col = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear', 'role'];
-        $orderby = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear','role' ];
+        $col = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear', 'role', 'pic', 'status'];
+        $orderby = ['id', 'name', 'email', 'mobile', 'address', 'faculty', 'department', 'classyear','role' , 'pic', 'status'];
 
         $customers = Customer::select($col);
 

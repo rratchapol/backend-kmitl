@@ -24,8 +24,10 @@ class PostController extends Controller
         $col = ['id', 'image', 'detail', 'category', 'tag', 'price', 'userpost_id', 'status'];
         $orderby = ['id', 'image', 'detail', 'category' , 'tag', 'price', 'userpost_id', 'status'];
 
-        // $products = Product::select($col);
-        $posts = Post::select($col);
+        // $posts = Post::select($col);
+            // ดึงข้อมูลจากตาราง Post พร้อมข้อมูลของ User
+        $posts = Post::with('user')->select($col);
+
 
             // กรองตาม column ที่ส่งมา
 
@@ -119,7 +121,8 @@ class PostController extends Controller
         // ดูข้อมูล Post ตาม ID
         public function show($id)
         {
-            $post = Post::findOrFail($id);
+            // $post = Post::findOrFail($id);
+            $post = Post::with('user')->findOrFail($id);
             return response()->json($post);
         }
     
