@@ -84,6 +84,7 @@ class CustomerController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'pic' => 'nullable|string',
             'email' => 'required|string|email|max:255|unique:customers',
             'mobile' => 'required|string|max:15',
             'address' => 'required|string|max:255',
@@ -177,6 +178,7 @@ class CustomerController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'sometimes|required|string|max:255',
+            'pic' => 'nullable|string',
             'email' => 'sometimes|required|string|email|max:255|unique:customers,email,' . $id,
             'mobile' => 'sometimes|required|string|max:15',
             'address' => 'sometimes|required|string|max:255',
@@ -184,6 +186,7 @@ class CustomerController extends Controller
             'department' => 'sometimes|required|string|max:255',
             'classyear' => 'sometimes|required|string|max:4',
             'role' => 'sometimes|required|string|max:50',
+            'status' => 'nullable|string',
         ]);
     
         $customer = Customer::find($id);

@@ -21,13 +21,18 @@ class PostController extends Controller
         $start = $request->input('start', 0);
         $page = ($start / $length) + 1;
 
-        $col = ['id', 'image', 'detail', 'category', 'tag', 'price', 'userpost_id'];
-        $orderby = ['id', 'image', 'detail', 'category' , 'tag', 'price', 'userpost_id'];
+        $col = ['id', 'image', 'detail', 'category', 'tag', 'price', 'userpost_id', 'status'];
+        $orderby = ['id', 'image', 'detail', 'category' , 'tag', 'price', 'userpost_id', 'status'];
 
         // $products = Product::select($col);
         $posts = Post::select($col);
 
             // กรองตาม column ที่ส่งมา
+
+        if ($poststatus = $request->input('status', '')) {
+            $posts->where('status', 'like', "%$poststatus%");
+        }
+
         if ($postcategory = $request->input('category', '')) {
             $posts->where('category', 'like', "%$postcategory%");
         }
@@ -143,6 +148,7 @@ class PostController extends Controller
                 'category' => 'string',
                 'tag' => 'string',
                 'price' => 'numeric',
+                'status' => 'string',
             ]);
     
             $post = Post::findOrFail($id);

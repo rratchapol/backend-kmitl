@@ -70,12 +70,16 @@ class ProductController extends Controller
     $start = $request->input('start', 0);
     $page = ($start / $length) + 1;
 
-    $col = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'product_location', 'product_condition', 'product_years', 'product_defect', 'tag'];
-    $orderby = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'product_location', 'product_condition', 'product_years', 'product_defect', 'tag'];
+    $col = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'product_location', 'product_condition', 'product_years', 'product_defect', 'tag','status'];
+    $orderby = ['id', 'product_name', 'product_qty', 'product_price', 'product_description', 'product_category', 'product_type', 'seller_id', 'date_exp', 'product_location', 'product_condition', 'product_years', 'product_defect', 'tag', 'status'];
 
     $products = Product::select($col);
 
     // กรองตาม column ที่ส่งมา
+    if ($productstatus = $request->input('status', '')) {
+        $products->where('status', 'like', "%$productstatus%");
+    }
+
     if ($productType = $request->input('product_type', '')) {
         $products->where('product_type', 'like', "%$productType%");
     }
@@ -236,7 +240,7 @@ class ProductController extends Controller
         return response()->json($product, 201);
     }
 
-    
+
     public function update(Request $request, string $id)
     {
         $product = Product::find($id);

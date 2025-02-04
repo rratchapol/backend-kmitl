@@ -11,6 +11,7 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id(); // สร้างคอลัมน์ id
             $table->string('name'); // ชื่อ
+            $table->string('pic')->nullable();
             $table->string('email')->unique(); // อีเมล
             $table->string('mobile'); // เบอร์โทรศัพท์
             $table->string('address'); // ที่อยู่
