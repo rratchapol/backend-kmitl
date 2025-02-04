@@ -15,6 +15,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\CheckProductController;
 
 
 Route::group(['prefix' => 'auth'], function ($router) {
@@ -111,6 +112,8 @@ Route::middleware(['auth:api'])->group(function () {
 
 });
 
+
+// Admin
 Route::prefix('admin')->group(function () {
     Route::post('register', [AdminAuthController::class, 'register']);
     Route::post('login', [AdminAuthController::class, 'login']);
@@ -156,5 +159,12 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::get('/locations/{id}', [LocationController::class, 'show']);
     Route::put('/locations/{id}', [LocationController::class, 'update']);
     Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
+
+
+    Route::get('/checkpoduct', [CheckProductController::class, 'index']);
+    Route::post('/checkpoduct', [CheckProductController::class, 'store']);
+    Route::get('/checkpoduct/{id}', [CheckProductController::class, 'show']);
+    Route::put('/checkpoduct/{id}', [CheckProductController::class, 'update']);
+    Route::delete('/checkpoduct/{id}', [CheckProductController::class, 'destroy']);
 
 });
