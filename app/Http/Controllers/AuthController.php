@@ -99,6 +99,8 @@ class AuthController extends Controller
             // $this->respondWithToken($token),
             'token' => $token,
             'user_id' => $user->id,
+            'expires_in' => auth()->factory()->getTTL() * 60
+
         ]);
     }
 

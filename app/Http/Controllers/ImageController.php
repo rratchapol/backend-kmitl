@@ -32,7 +32,7 @@ class ImageController extends Controller
 {
     // Validate รูปภาพที่อัปโหลด
     $request->validate([
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
         'image_path' => 'nullable|string', // เพิ่ม validation สำหรับ image_path (ไม่บังคับ)
     ]);
 
