@@ -11,8 +11,8 @@ class ChatController extends Controller
     public function sendMessage(Request $request)
     {
         $validated = $request->validate([
-            'buyer_id' => 'required|integer',
-            'seller_id' => 'required|integer',
+            'sender_id' => 'required|integer',
+            'receiver_id' => 'required|integer',
             'message' => 'nullable|string',
             'image' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -20,8 +20,8 @@ class ChatController extends Controller
         $imagePath = $request->file('image') ? $request->file('image')->store('chat-images') : null;
 
         $chat = Chat::create([
-            'buyer_id' => $validated['buyer_id'],
-            'seller_id' => $validated['seller_id'],
+            'sender_id' => $validated['sender_id'],
+            'receiver_id' => $validated['receiver_id'],
             'message' => $validated['message'] ?? null,
             'image' => $imagePath,
         ]);
@@ -34,13 +34,13 @@ class ChatController extends Controller
 
     // public function getUsersInConversation($user_id)
     // {
-    //     $chats = Chat::where('buyer_id', $user_id)
-    //         ->orWhere('seller_id', $user_id)
+    //     $chats = Chat::where('sender_id', $user_id)
+    //         ->orWhere('receiver_id', $user_id)
     //         ->get();
     
     //     // หาผู้ใช้ที่สนทนาด้วย
     //     $user_ids = $chats->map(function($chat) use ($user_id) {
-    //         return $chat->buyer_id == $user_id ? $chat->seller_id : $chat->buyer_id;
+    //         return $chat->sender_id == $user_id ? $chat->receiver_id : $chat->sender_id;
     //     });
     
     //     // ลบค่าซ้ำและใช้ values() เพื่อให้ข้อมูลเป็น array ธรรมดา
@@ -52,7 +52,7 @@ class ChatController extends Controller
 
     // public function getUsersInConversation($userId)
     // {
-    //     $chats = Chat::where('buyer_id', $userId)->with(['receiver'])->get();
+    //     $chats = Chat::where('sender_id', $userId)->with(['receiver'])->get();
 
         
     //     return response()->json($chats);
@@ -61,26 +61,26 @@ class ChatController extends Controller
     public function getUsersInConversation($userId)
     {
         // ดึงข้อมูลแชททั้งหมดที่เกี่ยวข้องกับ userId
-        $chats = Chat::where('buyer_id', $userId)
+        $chats = Chat::where('sender_id', $userId)
             ->with(['receiver'])
             ->orderBy('created_at', 'desc')  // เรียงแชทจากใหม่ไปเก่า
             ->get();
     
         // สร้าง collection ของ user_id โดยจะเลือกแค่ buyer หรือ seller ที่ไม่ซ้ำกัน
         $user_ids = $chats->map(function ($chat) use ($userId) {
-            return $chat->buyer_id == $userId ? $chat->seller_id : $chat->buyer_id;
+            return $chat->sender_id == $userId ? $chat->receiver_id : $chat->sender_id;
         });
     
         // ลบค่าซ้ำและใช้ values() เพื่อให้ข้อมูลเป็น array ธรรมดา
         $user_ids = $user_ids->unique()->values();
     
         // ดึงข้อมูลแชทที่เกี่ยวข้องกับ user_ids (ไม่ซ้ำ) พร้อมกับเลือกแค่แชทล่าสุดจากแต่ละ user
-        $chats = Chat::whereIn('buyer_id', $user_ids)
+        $chats = Chat::whereIn('sender_id', $user_ids)
             ->with(['receiver'])
-            ->orWhereIn('seller_id', $user_ids)
+            ->orWhereIn('receiver_id', $user_ids)
             ->orderBy('created_at', 'desc')
             ->get()
-            ->groupBy('seller_id')  // กลุ่มแชทตาม seller_id
+            ->groupBy('receiver_id')  // กลุ่มแชทตาม receiver_id
             ->map(function ($group) {
                 return $group->first();  // เลือกแค่แชทแรกในแต่ละกลุ่ม (แชทล่าสุด)
             })
@@ -91,24 +91,24 @@ class ChatController extends Controller
 
 
 
-    // public function fetchMessages($buyer_id, $seller_id)
+    // public function fetchMessages($sender_id, $receiver_id)
     // {
-    //     $chats = Chat::where('buyer_id', $buyer_id)
-    //         ->where('seller_id', $seller_id)
+    //     $chats = Chat::where('sender_id', $sender_id)
+    //         ->where('receiver_id', $receiver_id)
     //         ->get();
 
     //     return response()->json($chats);
     // }
 
-    public function fetchMessages($buyer_id, $seller_id)
+    public function fetchMessages($sender_id, $receiver_id)
 {
-    $chats = Chat::where(function ($query) use ($buyer_id, $seller_id) {
-            $query->where('buyer_id', $buyer_id)
-                  ->where('seller_id', $seller_id);
+    $chats = Chat::where(function ($query) use ($sender_id, $receiver_id) {
+            $query->where('sender_id', $sender_id)
+                  ->where('receiver_id', $receiver_id);
         })
-        ->orWhere(function ($query) use ($buyer_id, $seller_id) {
-            $query->where('buyer_id', $seller_id)
-                  ->where('seller_id', $buyer_id);
+        ->orWhere(function ($query) use ($sender_id, $receiver_id) {
+            $query->where('sender_id', $receiver_id)
+                  ->where('receiver_id', $sender_id);
         })
         ->orderBy('created_at', 'asc')  // เรียงตามวันที่
         ->get();
@@ -120,8 +120,8 @@ class ChatController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'buyer_id' => 'required|integer',
-            'seller_id' => 'required|integer',
+            'sender_id' => 'required|integer',
+            'receiver_id' => 'required|integer',
             'message' => 'nullable|string',
             'image' => 'nullable|string',
         ]);

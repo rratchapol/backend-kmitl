@@ -11,7 +11,7 @@ class Admin extends Authenticatable implements JWTSubject
     use Notifiable;
 
     protected $fillable = [
-        'name', 'username', 'password',
+        'name', 'username', 'password','role'
     ];
 
     protected $hidden = [

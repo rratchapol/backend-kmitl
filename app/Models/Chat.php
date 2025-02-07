@@ -10,8 +10,8 @@ class Chat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'buyer_id',
-        'seller_id',
+        'sender_id',
+        'receiver_id',
         'message',
         'image',
         'statusread',
@@ -19,11 +19,11 @@ class Chat extends Model
 
     public function receiver()
     {
-        return $this->belongsTo(Customer::class, 'seller_id');
+        return $this->belongsTo(Customer::class, 'receiver_id');
     }
 
     public function user()
 {
-    return $this->belongsTo(Customer::class, 'buyer_id');
+    return $this->belongsTo(Customer::class, 'sender_id');
 }
 }

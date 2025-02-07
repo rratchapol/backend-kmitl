@@ -15,12 +15,14 @@ class AdminAuthController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|unique:admins',
             'password' => 'required|string|min:5',
+            'role' => 'nullable|string',
         ]);
 
         $admin = Admin::create([
             'name' => $request->name,
             'username' => $request->username,
             'password' => Hash::make($request->password),
+            'role' => $request->role
         ]);
 
         return response()->json(['message' => 'Admin registered successfully'], 201);
@@ -41,6 +43,7 @@ class AdminAuthController extends Controller
             // $this->respondWithToken($token),
             'token' => $token,
             'admin_id' => $admin->id,
+            'role' => $admin->role
         ]);
     }
 
@@ -74,6 +77,7 @@ class AdminAuthController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|unique:admins,username,' . $id,
             'password' => 'required|string|min:5',
+            'role' => 'nullable|string',
         ]);
 
         // ค้นหา Admin ตาม ID
@@ -87,6 +91,7 @@ class AdminAuthController extends Controller
         $admin->name = $request->name;
         $admin->username = $request->username;
         $admin->password = Hash::make($request->password);
+        $admin->role = $request->role;
 
         // บันทึกการเปลี่ยนแปลง
         $admin->save();
