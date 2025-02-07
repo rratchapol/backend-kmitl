@@ -98,4 +98,18 @@ class AdminAuthController extends Controller
     {
         return response()->json(auth('admin_api')->user());
     }
+
+
+    public function destroy($id)
+    {
+        $Admin = Admin::find($id);
+
+        if (!$Admin) {
+            return response()->json(['message' => 'Admin not found'], 404);
+        }
+
+        $Admin->delete();
+
+        return response()->json(['message' => 'Admin deleted successfully']);
+    }
 }

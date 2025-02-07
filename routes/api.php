@@ -125,6 +125,7 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::get('/admin', [AdminAuthController::class, 'getAllAdmins']);
     Route::get('/admin/{id}', [AdminAuthController::class, 'look']);
     Route::put('/admin/{id}', [AdminAuthController::class, 'updateAdmin']);
+    Route::delete('admin/{id}', [AdminAuthController::class, 'destroy']); // ลบลูกค้า
 
 
     Route::post('customer', [CustomerController::class, 'index']); // แสดงรายชื่อลูกค้าทั้งหมด

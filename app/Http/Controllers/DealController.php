@@ -53,21 +53,7 @@ class DealController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/deals/{id}",
-     *     summary="Get a specific deal",
-     *     tags={"Deals"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="Deal not found")
-     * )
-     */
+
     public function show($id)
     {
         $deal = Deal::with(['buyer', 'product'])->findOrFail($id);
@@ -76,43 +62,22 @@ class DealController extends Controller
 
 
     public function look($id)
-{
-    // ค้นหาดีลโดยตรวจสอบ buyer_id หรือ seller_id
-    $deal = Deal::with(['buyer', 'product'])
-        ->where('buyer_id', $id)
-        ->orWhereHas('product', function ($query) use ($id) {
-            $query->where('seller_id', $id);
-        })
-        ->first();
-
-    // ถ้าไม่พบดีล
-    if (!$deal) {
-        return response()->json(['message' => 'No deal found'], 404);
+    {
+        // ค้นหาโพสต์ที่ตรงกับ buyer_id พร้อมข้อมูล product และ seller
+        $posts = Deal::with(['product.seller']) // ดึงข้อมูล seller ด้วย
+                     ->where('buyer_id', $id)
+                     ->get();
+    
+        // ถ้าไม่พบโพสต์
+        if ($posts->isEmpty()) {
+            return response()->json(['message' => 'No posts found for this user'], 404);
+        }
+    
+        return response()->json($posts);
     }
-
-    // คืนค่าดีลที่พบ
-    return response()->json($deal);
-}
+    
 
 
-    /**
-     * @OA\Post(
-     *     path="/api/deals",
-     *     summary="Create a new deal",
-     *     tags={"Deals"},
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             @OA\Property(property="buyer_id", type="integer"),
-     *             @OA\Property(property="product_id", type="integer"),
-     *             @OA\Property(property="qty", type="integer"),
-     *             @OA\Property(property="deal_date", type="string", format="date"),
-     *             @OA\Property(property="status", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Deal created successfully"),
-     *     @OA\Response(response=400, description="Invalid input")
-     * )
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -127,46 +92,6 @@ class DealController extends Controller
         return response()->json($deal, 201);
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/deals/{id}",
-     *     summary="Update a specific deal",
-     *     tags={"Deals"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             @OA\Property(property="buyer_id", type="integer"),
-     *             @OA\Property(property="product_id", type="integer"),
-     *             @OA\Property(property="qty", type="integer"),
-     *             @OA\Property(property="deal_date", type="string", format="date"),
-     *             @OA\Property(property="status", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Deal updated successfully"),
-     *     @OA\Response(response=404, description="Deal not found"),
-     *     @OA\Response(response=400, description="Invalid input")
-     * )
-     */
-    // public function update(Request $request, $id)
-    // {
-    //     $validatedData = $request->validate([
-    //         'buyer_id' => 'required|exists:users,id',
-    //         'product_id' => 'required|exists:products,id',
-    //         'qty' => 'required|integer',
-    //         'deal_date' => 'required|date',
-    //         'status' => 'required|string'
-    //     ]);
-
-    //     $deal = Deal::findOrFail($id);
-    //     $deal->update($validatedData);
-
-    //     return response()->json($deal);
-    // }
 
     public function update(Request $request, $id)
 {

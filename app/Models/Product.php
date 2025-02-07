@@ -27,6 +27,11 @@ class Product extends Model
         'status'
     ];
 
+    public function seller()
+    {
+        return $this->belongsTo(Customer::class, 'seller_id'); // สมมติว่า seller เป็น User
+    }
+
     protected $casts = [
         'product_images' => 'array', // เก็บรูปเป็น array
     ];
