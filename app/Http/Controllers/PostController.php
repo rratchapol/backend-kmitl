@@ -126,8 +126,9 @@ class PostController extends Controller
         // ดูข้อมูล Post ตาม ID
         public function show($id)
         {
-            $post = Post::find($id);
+            // $post = Post::find($id);
             // $post = Post::with('user_id')->findOrFail($id);
+            $post = Post::with('user')->find($id);
             if (!$post) {
                 return response()->json(['message' => 'post not found'], 404);
             }
@@ -139,8 +140,11 @@ class PostController extends Controller
         public function look($user_id)
         {
             // ค้นหาโพสต์ที่ตรงกับ user_id
-            // $posts = Customer::where('user_id', $user_id)->get();
-            $posts = Post::where('userpost_id', $user_id)->get();
+            $posts = Post::with('user')
+                        ->where('userpost_id', $user_id)
+                        ->get();
+
+            // $posts = Post::with('user')->find($user_id);
             // ถ้าไม่พบโพสต์
             if ($posts->isEmpty()) {
                 return response()->json(['message' => 'No posts found for this user'], 404);

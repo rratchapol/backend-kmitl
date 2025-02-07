@@ -62,6 +62,10 @@ class LikeController extends Controller
     public function show($id)
     {
         $like = Like::with(['user', 'product'])->findOrFail($id);
+        if (!$like) {
+            return response()->json(['message' => 'like not found'], 404);
+        }
+
         return response()->json($like);
     }
 

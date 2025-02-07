@@ -32,32 +32,89 @@ class ChatController extends Controller
     }
 
 
-    public function getUsersInConversation($user_id)
+    // public function getUsersInConversation($user_id)
+    // {
+    //     $chats = Chat::where('buyer_id', $user_id)
+    //         ->orWhere('seller_id', $user_id)
+    //         ->get();
+    
+    //     // หาผู้ใช้ที่สนทนาด้วย
+    //     $user_ids = $chats->map(function($chat) use ($user_id) {
+    //         return $chat->buyer_id == $user_id ? $chat->seller_id : $chat->buyer_id;
+    //     });
+    
+    //     // ลบค่าซ้ำและใช้ values() เพื่อให้ข้อมูลเป็น array ธรรมดา
+    //     $user_ids = $user_ids->unique()->values();
+    
+    //     // return response()->json($user_ids);
+    //     return response()->json(['success' => true, 'chat' => $user_ids]);
+    // }
+
+    // public function getUsersInConversation($userId)
+    // {
+    //     $chats = Chat::where('buyer_id', $userId)->with(['receiver'])->get();
+
+        
+    //     return response()->json($chats);
+    // }
+
+    public function getUsersInConversation($userId)
     {
-        $chats = Chat::where('buyer_id', $user_id)
-            ->orWhere('seller_id', $user_id)
+        // ดึงข้อมูลแชททั้งหมดที่เกี่ยวข้องกับ userId
+        $chats = Chat::where('buyer_id', $userId)
+            ->with(['receiver'])
+            ->orderBy('created_at', 'desc')  // เรียงแชทจากใหม่ไปเก่า
             ->get();
     
-        // หาผู้ใช้ที่สนทนาด้วย
-        $user_ids = $chats->map(function($chat) use ($user_id) {
-            return $chat->buyer_id == $user_id ? $chat->seller_id : $chat->buyer_id;
+        // สร้าง collection ของ user_id โดยจะเลือกแค่ buyer หรือ seller ที่ไม่ซ้ำกัน
+        $user_ids = $chats->map(function ($chat) use ($userId) {
+            return $chat->buyer_id == $userId ? $chat->seller_id : $chat->buyer_id;
         });
     
         // ลบค่าซ้ำและใช้ values() เพื่อให้ข้อมูลเป็น array ธรรมดา
         $user_ids = $user_ids->unique()->values();
     
-        return response()->json($user_ids);
-    }
+        // ดึงข้อมูลแชทที่เกี่ยวข้องกับ user_ids (ไม่ซ้ำ) พร้อมกับเลือกแค่แชทล่าสุดจากแต่ละ user
+        $chats = Chat::whereIn('buyer_id', $user_ids)
+            ->with(['receiver'])
+            ->orWhereIn('seller_id', $user_ids)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('seller_id')  // กลุ่มแชทตาม seller_id
+            ->map(function ($group) {
+                return $group->first();  // เลือกแค่แชทแรกในแต่ละกลุ่ม (แชทล่าสุด)
+            })
+            ->values();  // เปลี่ยนค่าผลลัพธ์ให้เป็น array
     
-
-    public function fetchMessages($buyer_id, $seller_id)
-    {
-        $chats = Chat::where('buyer_id', $buyer_id)
-            ->where('seller_id', $seller_id)
-            ->get();
-
         return response()->json($chats);
     }
+
+
+
+    // public function fetchMessages($buyer_id, $seller_id)
+    // {
+    //     $chats = Chat::where('buyer_id', $buyer_id)
+    //         ->where('seller_id', $seller_id)
+    //         ->get();
+
+    //     return response()->json($chats);
+    // }
+
+    public function fetchMessages($buyer_id, $seller_id)
+{
+    $chats = Chat::where(function ($query) use ($buyer_id, $seller_id) {
+            $query->where('buyer_id', $buyer_id)
+                  ->where('seller_id', $seller_id);
+        })
+        ->orWhere(function ($query) use ($buyer_id, $seller_id) {
+            $query->where('buyer_id', $seller_id)
+                  ->where('seller_id', $buyer_id);
+        })
+        ->orderBy('created_at', 'asc')  // เรียงตามวันที่
+        ->get();
+
+    return response()->json($chats);
+}
 
 //   ---------------------------------  ทดลอง
     public function store(Request $request)

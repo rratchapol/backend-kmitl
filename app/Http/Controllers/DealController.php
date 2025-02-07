@@ -54,17 +54,23 @@ class DealController extends Controller
     }
 
 
+    // public function show($id)
+    // {
+    //     $deal = Deal::with(['buyer', 'product'])->findOrFail($id);
+    //     return response()->json($deal);
+    // }
     public function show($id)
     {
-        $deal = Deal::with(['buyer', 'product'])->findOrFail($id);
+        $deal = Deal::with(['buyer', 'product.seller']) // ดึง product พร้อม seller
+                    ->findOrFail($id);
+    
         return response()->json($deal);
     }
-
 
     public function look($id)
     {
         // ค้นหาโพสต์ที่ตรงกับ buyer_id พร้อมข้อมูล product และ seller
-        $posts = Deal::with(['product.seller']) // ดึงข้อมูล seller ด้วย
+        $posts = Deal::with(['buyer','product.seller']) // ดึงข้อมูล seller ด้วย
                      ->where('buyer_id', $id)
                      ->get();
     

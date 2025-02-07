@@ -150,7 +150,8 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::find($id);
+        // $product = Product::find($id);
+        $product = Product::with('seller')->find($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);

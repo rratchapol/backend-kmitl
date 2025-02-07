@@ -16,4 +16,14 @@ class Chat extends Model
         'image',
         'statusread',
     ];
+
+    public function receiver()
+    {
+        return $this->belongsTo(Customer::class, 'seller_id');
+    }
+
+    public function user()
+{
+    return $this->belongsTo(Customer::class, 'buyer_id');
+}
 }
