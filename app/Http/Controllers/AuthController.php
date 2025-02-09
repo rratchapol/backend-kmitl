@@ -79,7 +79,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         // ดึงข้อมูลผู้ใช้จากอีเมลที่ผู้ใช้พยายามเข้าสู่ระบบ
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::with('customers')->where('email', $credentials['email'])->first();
 
         // ตรวจสอบว่าผู้ใช้มีการยืนยันอีเมลหรือยัง
         if (!$user || $user->email_verified_at === null) {
@@ -90,7 +90,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
- 
+        $customerData = $user->customers;
 
         // return $this->respondWithToken($token);
 
@@ -99,7 +99,8 @@ class AuthController extends Controller
             // $this->respondWithToken($token),
             'token' => $token,
             'user_id' => $user->id,
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user_data' => $customerData // ข้อมูลผู้ใช้ที่ได้จากฐานข้อมูล
 
         ]);
     }
