@@ -37,7 +37,9 @@ class AuthController extends Controller
             "password" => "required|string|min:6|confirmed",
         ]);
 
-        $verificationCode = rand(0001, 9999); // สุ่มรหัส 4 หลัก
+        // $verificationCode = rand(0001, 9999); // สุ่มรหัส 4 หลัก
+        $verificationCode = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+
 
         $user = User::create([
             'name' => $validatedData['name'],
