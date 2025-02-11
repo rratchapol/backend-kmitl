@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Tag;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
@@ -66,10 +67,12 @@ class TagController extends Controller
         {
             $validated = $request->validate([
                 'name' => 'required|string|unique:tags,name|max:255',
+                'category_id' => 'required|exists:categories,id', // ต้องส่ง category_id และต้องมีอยู่จริง
             ]);
     
             $tag = Tag::create([
                 'name' => $validated['name'],
+                'category_id' => $validated['category_id']
             ]);
     
             return response()->json(['message' => 'Tag created successfully', 'tag' => $tag], 201);
@@ -86,6 +89,13 @@ class TagController extends Controller
     
             return response()->json($tag);
         }
+
+
+        // public function getTags($id)
+        // {
+        //     $category = Category::with('tags')->findOrFail($id);
+        //     return response()->json($category->tags);
+        // }
     
         // 4. แก้ไขแท็ก
         public function update(Request $request, $id)

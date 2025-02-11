@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id(); // id (Primary Key)
             $table->string('name')->unique(); // ชื่อแท็ก และห้ามซ้ำ
+            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // เชื่อมกับ categories
             $table->timestamps(); // created_at และ updated_at
         });
     }

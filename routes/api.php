@@ -89,6 +89,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('/gettag', [TagController::class, 'index']); // ดูแท็กทั้งหมด
     Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
+    Route::get('tagsbycategories/{id}', [CategoryController::class, 'getTags']); // ดึง Tag ตาม Category
     Route::get('/tag/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
     Route::put('/tags/{id}', [TagController::class, 'update']); // แก้ไขแท็ก
     Route::delete('/tags/{id}', [TagController::class, 'destroy']); // ลบแท็ก
@@ -148,9 +149,17 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::get('postid/{id}', [PostController::class, 'look']); 
 
 
+    Route::get('categorie', [CategoryController::class, 'index']); // ดู categories ทั้งหมด
+    Route::get('categorie/{id}', [CategoryController::class, 'show']); // ดู category ตาม id
+    Route::post('categorie', [CategoryController::class, 'store']); // เพิ่ม category ใหม่
+    Route::put('categorie/{id}', [CategoryController::class, 'update']); // แก้ไข category
+    Route::delete('categorie/{id}', [CategoryController::class, 'destroy']); // ลบ category
+
+
     Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
     Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
     Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
+    Route::get('tagsbycategorie/{id}', [CategoryController::class, 'getTags']); 
     Route::put('/tags/{id}', [TagController::class, 'update']); // แก้ไขแท็ก
     Route::delete('/tags/{id}', [TagController::class, 'destroy']); // ลบแท็ก
 
