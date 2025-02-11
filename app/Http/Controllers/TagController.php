@@ -20,10 +20,11 @@ class TagController extends Controller
             $start = $request->input('start', 0);
             $page = ($start / $length) + 1;
         
-            $col = ['id', 'name'];
-            $orderby = ['id', 'name'];
+            $col = ['id', 'name', 'category_id'];
+            $orderby = ['id', 'name', 'category_id'];
         
-            $categories = Tag::select($col);
+            // $categories = Tag::select($col);
+            $categories = Tag::with('category:id,category_name')->select($col);
         
             if (isset($order[0]['column']) && isset($orderby[$order[0]['column']])) {
                 $categories->orderBy($orderby[$order[0]['column']], $order[0]['dir']);
@@ -45,6 +46,9 @@ class TagController extends Controller
             if ($d->isNotEmpty()) {
                 $d->transform(function ($item, $key) use ($page, $length) {
                     $item->No = ($page - 1) * $length + $key + 1;
+                    $item->category_name = $item->category ? $item->category->category_name : null;
+                    // unset($item->category);
+                    // unset($item->category_id);
                     return $item;
                 });
             }
