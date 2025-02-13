@@ -54,6 +54,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('deals/{id}', [DealController::class, 'update']); // แก้ไข deal
     Route::delete('deals/{id}', [DealController::class, 'destroy']); // ลบ deal
     Route::get('dealsid/{id}', [DealController::class, 'look']); // ดู deal ตาม id
+    Route::get('dealsellerid/{id}', [DealController::class, 'lookBySeller']); // ดู deal ตาม id
 
 
 

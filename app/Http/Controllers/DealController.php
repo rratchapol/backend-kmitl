@@ -76,12 +76,28 @@ class DealController extends Controller
     
         // ถ้าไม่พบโพสต์
         if ($posts->isEmpty()) {
-            return response()->json(['message' => 'No posts found for this user'], 404);
+            return response()->json(['message' => 'No deals found for this user'], 404);
         }
     
         return response()->json($posts);
     }
     
+    public function lookBySeller($sellerId)
+    {
+        // ค้นหาโพสต์ที่มีสินค้าที่ตรงกับ seller_id
+        $posts = Deal::with(['buyer', 'product.seller'])
+                    ->whereHas('product', function ($query) use ($sellerId) {
+                        $query->where('seller_id', $sellerId);
+                    })
+                    ->get();
+
+        if ($posts->isEmpty()) {
+            return response()->json(['message' => 'No deals found for this seller'], 404);
+        }
+
+        return response()->json($posts);
+}
+
 
 
     public function store(Request $request)
