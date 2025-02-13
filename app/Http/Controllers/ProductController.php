@@ -151,7 +151,10 @@ class ProductController extends Controller
     public function show(string $id)
     {
         // $product = Product::find($id);
-        $product = Product::with('seller')->find($id);
+        // $product = Product::with('seller')->find($id);
+        $product = Product::with(['seller', 'likes' => function ($query) {
+            $query->select('id', 'product_id'); // เลือกเฉพาะฟิลด์ที่ต้องการ
+        }])->find($id);
 
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);

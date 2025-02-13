@@ -32,6 +32,11 @@ class Product extends Model
         return $this->belongsTo(Customer::class, 'seller_id'); // สมมติว่า seller เป็น User
     }
 
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'product_id');
+    }
+
     protected $casts = [
         'product_images' => 'array', // เก็บรูปเป็น array
     ];
