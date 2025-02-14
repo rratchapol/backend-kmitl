@@ -18,13 +18,16 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CheckProductController;
 
 
+Route::get('productsss', [ProductController::class, 'product']);
+Route::get('productssss', [ProductController::class, 'index']);
+
 Route::group(['prefix' => 'auth'], function ($router) {
 
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
     Route::post('verifyemail', [AuthController::class, 'verifyEmail']);
     // Route::get('customers', [CustomerController::class, 'index']);
-    Route::get('products', [ProductController::class, 'index']);
+    Route::get('productss', [ProductController::class, 'product']);
 
 });
 Route::middleware(['auth:api'])->group(function () {

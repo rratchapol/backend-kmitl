@@ -60,6 +60,11 @@ class ProductController extends Controller
     //     ]);
     // }
 
+    public function product()
+     {
+         return response()->json(Product::all());
+     }
+
 
     public function index(Request $request)
 {
