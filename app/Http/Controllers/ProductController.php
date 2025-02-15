@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Like;
 use App\Models\CheckProduct;
 use OpenApi\Annotations as OA;
 use Illuminate\Http\Request;
@@ -153,20 +154,42 @@ class ProductController extends Controller
      *     @OA\Response(response=404, description="Product not found")
      * )
      */
-    public function show(string $id)
-    {
-        // $product = Product::find($id);
-        // $product = Product::with('seller')->find($id);
-        $product = Product::with(['seller', 'likes' => function ($query) {
-            $query->select('id', 'product_id'); // เลือกเฉพาะฟิลด์ที่ต้องการ
-        }])->find($id);
+    // public function show(string $id)
+    // {
+    //     // $product = Product::find($id);
+    //     // $product = Product::with('seller')->find($id);
+    //     $product = Product::with(['seller', 'likes' => function ($query) {
+    //         $query->select('id', 'product_id'); // เลือกเฉพาะฟิลด์ที่ต้องการ
+    //     }])->find($id);
 
+    //     if (!$product) {
+    //         return response()->json(['message' => 'Product not found'], 404);
+    //     }
+
+    //     return response()->json($product);
+    // }
+
+
+    public function show(string $product_id, string $user_id)
+    {
+        $product = Product::with('seller')->find($product_id);
+    
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
-
-        return response()->json($product);
+    
+        // ตรวจสอบว่าผู้ใช้กดไลค์สินค้านี้หรือไม่
+        $isLiked = Like::where('userlike_id', $user_id)
+            ->where('product_id', $product_id)
+            ->exists();
+    
+        return response()->json([
+            'product' => $product,
+            'is_liked' => $isLiked
+        ]);
     }
+    
+
 
 
     public function look(string $seller_id)
