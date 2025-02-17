@@ -16,7 +16,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\CheckProductController;
-
+use App\Http\Controllers\RecommendController;
 
 Route::get('productsss', [ProductController::class, 'product']);
 Route::get('productssss', [ProductController::class, 'index']);
@@ -113,6 +113,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/chat/fetch/{buyer_id}/{seller_id}', [ChatController::class, 'fetchMessages']);
     Route::post('/chat', [ChatController::class, 'store']);
     Route::post('/seechat/{user_id}', [ChatController::class, 'getUsersInConversation']);
+
+
+    Route::get('/recommend/{user_id}', [RecommendController::class, 'getUserRecommendations']); // ดึงสินค้าที่เคยซื้อ
+
 
 
 });

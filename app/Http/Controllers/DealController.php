@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Deal;
 use OpenApi\Annotations as OA;
 use App\Models\Product;
-
+use App\Models\Recommend;
 class DealController extends Controller
 {
     /**
@@ -146,6 +146,17 @@ class DealController extends Controller
 
     // อัปเดตข้อมูล deal
     $deal->update($validatedData);
+
+        // ✅ **เพิ่มสินค้าเข้า recommend ถ้า status เป็น "ok"**
+        if ($validatedData['status'] === 'ok') {
+            Recommend::updateOrCreate(
+                [
+                    'user_id' => $validatedData['buyer_id'],
+                    'product_id' => $validatedData['product_id']
+                ],
+
+            );
+        }
 
     return response()->json($deal);
 }

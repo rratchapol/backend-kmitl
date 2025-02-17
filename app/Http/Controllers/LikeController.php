@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Like;
+use App\Models\Recommend;
 use OpenApi\Annotations as OA;
 
 class LikeController extends Controller
@@ -92,7 +93,29 @@ class LikeController extends Controller
         ]);
 
         $like = Like::create($validatedData);
+
+         // Debug: ตรวจสอบค่าของ userlike_id และ product_id
+    \Log::info('Userlike ID:', ['userlike_id' => $validatedData['userlike_id']]);
+    \Log::info('Product ID:', ['product_id' => $validatedData['product_id']]);
+
+    $recommend = Recommend::updateOrCreate(
+        [
+            'userlike_id' => $validatedData['userlike_id'],
+            'productlike_id' => $validatedData['product_id'],
+        ],
+        [
+            'userlike_id' => $validatedData['userlike_id'], // ทำการอัปเดตค่าตรงนี้
+            'productlike_id' => $validatedData['product_id']
+        ]
+    );
+
+
+        
         return response()->json($like, 201);
+        // return response()->json([
+        //     'like' => $like,
+        //     'recommend' => $recommend
+        // ], 201);
     }
 
     /**
