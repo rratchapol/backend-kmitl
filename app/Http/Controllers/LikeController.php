@@ -94,9 +94,6 @@ class LikeController extends Controller
 
         $like = Like::create($validatedData);
 
-         // Debug: ตรวจสอบค่าของ userlike_id และ product_id
-    \Log::info('Userlike ID:', ['userlike_id' => $validatedData['userlike_id']]);
-    \Log::info('Product ID:', ['product_id' => $validatedData['product_id']]);
 
     $recommend = Recommend::updateOrCreate(
         [
@@ -153,44 +150,28 @@ class LikeController extends Controller
         return response()->json($like);
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/likes/{id}",
-     *     summary="Delete a specific like",
-     *     tags={"Likes"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=204, description="Like deleted successfully"),
-     *     @OA\Response(response=404, description="Like not found")
-     * )
-     */
-    public function destroy($id)
-    {
-        $like = Like::findOrFail($id);
-        $like->delete();
+  
+    // public function destroy($id)
+    // {
+    //     $like = Like::findOrFail($id);
+    //     $like->delete();
 
-        return response()->json(['message' => 'Like deleted successfully']);
-    }
+    //     return response()->json(['message' => 'Like deleted successfully']);
+    // }
 
-    /**
-     * @OA\Get(
-     *     path="/api/users/{userId}/likes",
-     *     summary="Get likes created by a specific user",
-     *     tags={"Likes"},
-     *     @OA\Parameter(
-     *         name="userId",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Successful operation"),
-     *     @OA\Response(response=404, description="User not found")
-     * )
-     */
+    public function destroy($userlike_id, $product_id)
+{
+    $like = Like::where('userlike_id', $userlike_id)
+                ->where('product_id', $product_id)
+                ->firstOrFail();
+
+    $like->delete();
+
+    return response()->json(['message' => 'Like deleted successfully']);
+}
+
+
+  
     public function getLikesByUser($userId)
     {
         $likes = Like::where('userlike_id', $userId)->with(['user', 'product'])->get();

@@ -72,7 +72,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('likes/{id}', [LikeController::class, 'show']); // ดู like ตาม id
     Route::post('likes', [LikeController::class, 'store']); // เพิ่ม like ใหม่
     Route::put('likes/{id}', [LikeController::class, 'update']); // แก้ไข like
-    Route::delete('likes/{id}', [LikeController::class, 'destroy']); // ลบ like
+    Route::delete('likes/{userlike_id}/{product_id}', [LikeController::class, 'destroy']); // ลบ like
     Route::get('userslikes/{userId}', [LikeController::class, 'getLikesByUser']); // ดู likes ทั้งหมดที่ user นี้สร้าง
 
 
