@@ -24,21 +24,21 @@
 
         // ฟัง Event 'ChatMessageSent'
         channel.bind('ChatMessageSent', function(data) {
-            console.log('Message received:', data);
+            console.log('Message received data:', data);
             // แสดงข้อความใหม่ในหน้าจอ
             const chatBox = document.getElementById('chat-box');
             const messageElement = document.createElement('p');
-            messageElement.textContent = `Buyer: ${data.buyer_id}, Seller: ${data.seller_id}, Message: ${data.message}`;
+            messageElement.textContent = `sender: ${data.sender_id}, receiver: ${data.receiver_id}, Message: ${data.message}`;
             chatBox.appendChild(messageElement);
         });
 
         echo.private('chat')
         .listen('ChatMessageSent', (event) => {
-            console.log('Message received:', event);
+            console.log('Message received event:', event);
             // ทำอะไรกับข้อความที่ได้รับ
             const chatBox = document.getElementById('chat-box');
             const messageElement = document.createElement('p');
-            messageElement.textContent = `${event.message} - from ${event.buyer_id}`;
+            messageElement.textContent = `${event.message} - from ${event.sender_id}`;
             chatBox.appendChild(messageElement);
     });
     </script>
