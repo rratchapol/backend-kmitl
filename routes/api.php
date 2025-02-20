@@ -21,6 +21,9 @@ use App\Http\Controllers\RecommendController;
 Route::get('productsss', [ProductController::class, 'product']);
 Route::get('productssss', [ProductController::class, 'index']);
 
+Route::get('postsss', [PostController::class, 'post']);
+Route::get('postssss', [PostController::class, 'index']);
+
 Route::group(['prefix' => 'auth'], function ($router) {
 
     Route::post('login', [AuthController::class, 'login']);
