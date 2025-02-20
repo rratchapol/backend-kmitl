@@ -14,7 +14,7 @@ class ChatController extends Controller
             'sender_id' => 'required|integer',
             'receiver_id' => 'required|integer',
             'message' => 'nullable|string',
-            // 'image' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $imagePath = $request->file('image') ? $request->file('image')->store('chat-images') : null;
@@ -23,7 +23,7 @@ class ChatController extends Controller
             'sender_id' => $validated['sender_id'],
             'receiver_id' => $validated['receiver_id'],
             'message' => $validated['message'] ?? null,
-            // 'image' => $imagePath,
+            'image' => $imagePath,
         ]);
 
         broadcast(new ChatMessageSent($chat->toArray()))->toOthers();
@@ -93,7 +93,7 @@ class ChatController extends Controller
             'sender_id' => 'required|integer',
             'receiver_id' => 'required|integer',
             'message' => 'nullable|string',
-            // 'image' => 'nullable|string',
+            'image' => 'nullable|string',
         ]);
 
         $validated['statusread'] = 0;
