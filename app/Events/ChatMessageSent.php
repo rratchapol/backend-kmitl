@@ -22,20 +22,16 @@ class ChatMessageSent implements ShouldBroadcast
         $this->chat = $chat;
     }
 
+    // public function broadcastOn()
+    // {
+    //     return new Channel('chat');
+    // }
+
     public function broadcastOn()
     {
-        // return new PrivateChannel('chat' . $this->message['buyer_id']);
-
-        // return new PrivateChannel('chat');
-        return new Channel('chat');
+        return new PrivateChannel('chat/' . min($this->chat->sender_id, $this->chat->receiver_id) . '/' . max($this->chat->sender_id, $this->chat->receiver_id));
     }
-
-    // public function broadcastWith()
-    // {
-    //     return [
-    //         'message' => $this->message,
-    //     ];
-    // }
+    
 
     public function broadcastWith()
     {
@@ -43,7 +39,7 @@ class ChatMessageSent implements ShouldBroadcast
             'sender_id' => $this->chat->sender_id,
             'receiver_id' => $this->chat->receiver_id,
             'message' => $this->chat->message,
-            'image' => $this->chat->image,
+            // 'image' => $this->chat->image,
         ];
     }
 
