@@ -6,6 +6,7 @@ use App\Events\ChatMessageSent;
 use App\Events\ChatMessageRead;
 
 use App\Models\Chat;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Log;
 class ChatController extends Controller
@@ -34,7 +35,7 @@ class ChatController extends Controller
     }
 
 
-    public function getUsersInConversation($userId)
+    public function getUsersInConversations($userId)
     {
         // ดึงข้อมูลแชททั้งหมดที่เกี่ยวข้องกับ userId
         $chats = Chat::where('sender_id', $userId)
@@ -120,6 +121,65 @@ class ChatController extends Controller
     }
 
 
-    
+    public function getUsersInConversation($userId)
+    {
+        // ดึงข้อมูลแชททั้งหมดที่เกี่ยวข้องกับ userId
+        $chats = Chat::where('sender_id', $userId)
+            ->orWhere('receiver_id', $userId)
+            ->orderBy('created_at', 'desc') // เรียงแชทจากใหม่ไปเก่า
+            ->get();
+
+        // สร้าง collection ของ user_id โดยจะเลือกแค่คู่สนทนาที่ไม่ซ้ำกัน
+        $user_ids = $chats->map(function ($chat) use ($userId) {
+            return $chat->sender_id == $userId ? $chat->receiver_id : $chat->sender_id;
+        })->unique()->values(); // เอาค่าที่ไม่ซ้ำกันออก
+
+        // ดึงข้อมูลแชทล่าสุดของแต่ละคู่สนทนา พร้อมนับข้อความที่ยังไม่ได้อ่าน
+        $conversations = $user_ids->map(function ($chatUserId) use ($userId) {
+            // ดึงแชทล่าสุดจากคู่สนทนา
+            $latestChat = Chat::where(function ($query) use ($chatUserId, $userId) {
+                    $query->where('sender_id', $chatUserId)
+                        ->where('receiver_id', $userId);
+                })
+                ->orWhere(function ($query) use ($chatUserId, $userId) {
+                    $query->where('sender_id', $userId)
+                        ->where('receiver_id', $chatUserId);
+                })
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            // นับจำนวนข้อความที่ยังไม่ได้อ่าน (statusread = 0)
+            $unreadCount = Chat::where('sender_id', $chatUserId)
+                ->where('receiver_id', $userId)
+                ->where('statusread', 0)
+                ->count();
+
+            $user = Customer::find($chatUserId);
+
+            return [
+                'user_id' => $chatUserId,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'mobile' => $user->mobile,
+                    'address' => $user->address,
+                    'faculty' => $user->faculty,
+                    'department' => $user->department,
+                    'classyear' => $user->classyear,
+                    'role' => $user->role,
+                    'pic' => $user->pic,
+                    'status' => $user->status,
+                ],
+                // 'receiver_id' => $userId, // เพิ่ม receiver_id
+                'latest_message' => $latestChat ? $latestChat->message : null,
+                'latest_message_time' => $latestChat ? $latestChat->created_at : null,
+                'unread_count' => $unreadCount,
+            ];
+        });
+
+        return response()->json($conversations);
+}
+
 
 }
