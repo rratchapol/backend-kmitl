@@ -15,12 +15,12 @@
     <script>
         // เชื่อมต่อกับ Pusher
         const pusher = new Pusher('e5bdc31db695b897c05a', {
-            cluster: 'ap1', // ใช้ cluster ที่ตั้งค่าไว้ใน Pusher
+            cluster: 'ap1',
             encrypted: true
         });
 
-        // Subscribe ไปยัง Channel ชื่อ 'chat'
-        const channel = pusher.subscribe('chat');
+        // Subscribe ไปยัง Channel ชื่อ 'chat.1.2'
+        const channel = pusher.subscribe('chat.1.2'); // ใช้ชื่อ Channel ที่ตรงกับข้อมูลที่คุณส่งมา
 
         // ฟัง Event 'ChatMessageSent'
         channel.bind('ChatMessageSent', function(data) {
@@ -31,16 +31,6 @@
             messageElement.textContent = `sender: ${data.sender_id}, receiver: ${data.receiver_id}, Message: ${data.message}`;
             chatBox.appendChild(messageElement);
         });
-
-        echo.private('chat')
-        .listen('ChatMessageSent', (event) => {
-            console.log('Message received event:', event);
-            // ทำอะไรกับข้อความที่ได้รับ
-            const chatBox = document.getElementById('chat-box');
-            const messageElement = document.createElement('p');
-            messageElement.textContent = `${event.message} - from ${event.sender_id}`;
-            chatBox.appendChild(messageElement);
-    });
     </script>
 </body>
 </html>

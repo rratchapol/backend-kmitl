@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\ChatMessageSent;
+use App\Events\ChatMessageRead;
+
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Log;
@@ -77,11 +79,22 @@ class ChatController extends Controller
         ->orderBy('created_at', 'asc')  // เรียงตามวันที่
         ->get();
 
+    // // อัปเดต statusread เป็น 1 สำหรับข้อความที่ receiver ยังไม่ได้อ่าน
+    // Chat::where('sender_id', $receiver_id)
+    //     ->where('receiver_id', $sender_id)
+    //     ->where('statusread', 0)
+    //     ->update(['statusread' => 1]);
+
     // อัปเดต statusread เป็น 1 สำหรับข้อความที่ receiver ยังไม่ได้อ่าน
-    Chat::where('sender_id', $receiver_id)
+    $updated = Chat::where('sender_id', $receiver_id)
         ->where('receiver_id', $sender_id)
         ->where('statusread', 0)
         ->update(['statusread' => 1]);
+
+        // ถ้ามีข้อความที่ถูกอ่านแล้วให้ broadcast event
+    if ($updated > 0) {
+        broadcast(new ChatMessageRead( $receiver_id, $sender_id));
+    }
 
     return response()->json($chats);
 }
@@ -105,4 +118,8 @@ class ChatController extends Controller
     
         return response()->json($chat, 201);
     }
+
+
+    
+
 }

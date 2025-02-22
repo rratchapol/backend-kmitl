@@ -37,7 +37,7 @@ class ChatMessageSent implements ShouldBroadcast
         // เปลี่ยนจาก PrivateChannel เป็น Channel
         return new Channel('chat.' . min($this->chat->sender_id, $this->chat->receiver_id) . '.' . max($this->chat->sender_id, $this->chat->receiver_id));
     }
-    
+
 
     public function broadcastWith()
     {
