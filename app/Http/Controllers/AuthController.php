@@ -11,71 +11,38 @@ use Illuminate\Support\Facades\Mail;
 class AuthController extends Controller
 {
 
-     /**
-     * @OA\Post(
-     *     path="/api/register",
-     *     summary="Register a new user",
-     *     tags={"Authentication"},
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             required={"name", "email", "password", "password_confirmation"},
-     *             @OA\Property(property="name", type="string", format="string", example="John Doe"),
-     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="secret"),
-     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Registration successful"),
-     *     @OA\Response(response=400, description="Invalid input")
-     * )
-     */
-    public function register(Request $request)
-    {
-        $validatedData = $request->validate([
-            "name" => "required|string|max:255",
-            "email" => "required|string|email|max:255|unique:users",
-            "password" => "required|string|min:6|confirmed",
-        ]);
 
-        // $verificationCode = rand(0001, 9999); // สุ่มรหัส 4 หลัก
-        $verificationCode = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+    // public function register(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         "name" => "required|string|max:255",
+    //         "email" => "required|string|email|max:255|unique:users",
+    //         "password" => "required|string|min:6|confirmed",
+    //     ]);
+
+    //     // $verificationCode = rand(0001, 9999); // สุ่มรหัส 4 หลัก
+    //     $verificationCode = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
 
 
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => bcrypt($validatedData['password']),
-            'verification_code' => $verificationCode,
-            // 'email_verified_at' => null,
-        ]);
+    //     $user = User::create([
+    //         'name' => $validatedData['name'],
+    //         'email' => $validatedData['email'],
+    //         'password' => bcrypt($validatedData['password']),
+    //         'verification_code' => $verificationCode,
+    //         // 'email_verified_at' => null,
+    //     ]);
 
-        // ส่งอีเมลด้วย Mailgun
-        Mail::to($user->email)->send(new VerificationMail($verificationCode));
+    //     // ส่งอีเมลด้วย Mailgun
+    //     Mail::to($user->email)->send(new VerificationMail($verificationCode));
 
-        return response()->json([
-            'message' => 'Registration successful, please check your email for verification code',
-            'user_id' => $user->id
-        ]);
-    }
+    //     return response()->json([
+    //         'message' => 'Registration successful, please check your email for verification code',
+    //         'user_id' => $user->id
+    //     ]);
+    // }
 
 
-    /**
-     * @OA\Post(
-     *     path="/api/login",
-     *     summary="Login a user",
-     *     tags={"Authentication"},
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             required={"email", "password"},
-     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="secret")
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Login successful"),
-     *     @OA\Response(response=403, description="Email not verified"),
-     *     @OA\Response(response=401, description="Unauthorized")
-     * )
-     */
+
     public function login()
     {
         $credentials = request(['email', 'password']);
@@ -121,15 +88,6 @@ class AuthController extends Controller
     }
 
 
-     /**
-     * @OA\Post(
-     *     path="/api/logout",
-     *     summary="Logout a user",
-     *     tags={"Authentication"},
-     *     @OA\Response(response=200, description="Successfully logged out"),
-     *     @OA\Response(response=401, description="Unauthorized")
-     * )
-     */
     public function logout()
     {
         auth()->logout();
@@ -138,38 +96,13 @@ class AuthController extends Controller
     }
 
 
-     /**
-     * @OA\Post(
-     *     path="/api/refresh",
-     *     summary="Refresh access token",
-     *     tags={"Authentication"},
-     *     @OA\Response(response=200, description="Access token refreshed successfully"),
-     *     @OA\Response(response=401, description="Unauthorized")
-     * )
-     */
+ 
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());
     }
 
 
-    /**
-     * @OA\Post(
-     *     path="/api/verify-email",
-     *     summary="Verify user email",
-     *     tags={"Authentication"},
-     *     @OA\RequestBody(
-     *         @OA\JsonContent(
-     *             required={"user_id", "email", "verification_code"},
-     *             @OA\Property(property="user_id", type="integer", example=1),
-     *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
-     *             @OA\Property(property="verification_code", type="integer", example=1234)
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Email verified successfully"),
-     *     @OA\Response(response=400, description="Invalid verification code")
-     * )
-     */
     protected function respondWithToken($token)
     {
         return response()->json([
@@ -179,29 +112,152 @@ class AuthController extends Controller
         ]);
     }
 
-    public function verifyEmail(Request $request)
-    {
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'email' => 'required|email|exists:users,email',
-            'verification_code' => 'required|numeric',
-        ]);
+    // public function verifyEmail(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'user_id' => 'required|exists:users,id',
+    //         'email' => 'required|email|exists:users,email',
+    //         'verification_code' => 'required|numeric',
+    //     ]);
 
-        // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
-        $user = User::where('id', $validatedData['user_id'])
-            ->where('email', $validatedData['email'])
-            ->first();
+    //     // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
+    //     $user = User::where('id', $validatedData['user_id'])
+    //         ->where('email', $validatedData['email'])
+    //         ->first();
 
-        // ตรวจสอบว่า verification_code ตรงกันหรือไม่
-        if ($user && $user->verification_code == $validatedData['verification_code']) {
-            // ตั้งค่า email_verified_at และลบรหัสยืนยัน
-            $user->email_verified_at = now();
-            $user->verification_code = null; // ลบรหัสยืนยันเมื่อยืนยันสำเร็จ
-            $user->save();
+    //     // ตรวจสอบว่า verification_code ตรงกันหรือไม่
+    //     if ($user && $user->verification_code == $validatedData['verification_code']) {
+    //         // ตั้งค่า email_verified_at และลบรหัสยืนยัน
+    //         $user->email_verified_at = now();
+    //         $user->verification_code = null; // ลบรหัสยืนยันเมื่อยืนยันสำเร็จ
+    //         $user->save();
 
-            return response()->json(['message' => 'Email verified successfully']);
-        } else {
-            return response()->json(['message' => 'Invalid verification code'], 400);
+    //         return response()->json(['message' => 'Email verified successfully']);
+    //     } else {
+    //         return response()->json(['message' => 'Invalid verification code'], 400);
+    //     }
+    // }
+
+
+    public function register(Request $request)
+{
+    $validatedData = $request->validate([
+        "name" => "required|string|max:255",
+        "email" => "required|string|email|max:255|unique:users",
+        "password" => "required|string|min:6|confirmed",
+    ]);
+
+    // สร้างรหัส OTP
+    $verificationCode = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+
+    // สร้างผู้ใช้ใหม่
+    $user = User::create([
+        'name' => $validatedData['name'],
+        'email' => $validatedData['email'],
+        'password' => bcrypt($validatedData['password']),
+        'verification_code' => $verificationCode,
+        // ไม่ต้องเพิ่ม expired_at ในฐานข้อมูล
+    ]);
+
+    // ส่งอีเมลด้วย Mailgun
+    Mail::to($user->email)->send(new VerificationMail($verificationCode));
+
+    return response()->json([
+        'message' => 'Registration successful, please check your email for verification code',
+        'user_id' => $user->id
+    ]);
+}
+
+public function verifyEmail(Request $request)
+{
+    $validatedData = $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'email' => 'required|email|exists:users,email',
+        'verification_code' => 'required|numeric',
+    ]);
+
+    // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
+    $user = User::where('id', $validatedData['user_id'])
+        ->where('email', $validatedData['email'])
+        ->first();
+
+    // ตรวจสอบว่า user มีข้อมูลและยังไม่ได้ยืนยันอีเมลภายใน 5 นาที
+    if ($user && $user->verification_code == $validatedData['verification_code']) {
+        $registrationTime = $user->created_at; // เวลาที่สมัคร
+
+        // ตรวจสอบว่า OTP หมดอายุหรือไม่ (5 นาที)
+        if ($registrationTime->diffInMinutes(now()) > 5) {
+            // OTP หมดอายุแล้ว
+            // ลบผู้ใช้ที่ยังไม่ได้ยืนยันอีเมล
+            $user->delete();
+            return response()->json(['message' => 'Verification code expired. User deleted, please register again.'], 400);
         }
+
+        // ตั้งค่า email_verified_at และลบรหัสยืนยัน
+        $user->email_verified_at = now();
+        $user->verification_code = null; // ลบรหัสยืนยันเมื่อยืนยันสำเร็จ
+        $user->save();
+
+        return response()->json(['message' => 'Email verified successfully']);
+    } else {
+        return response()->json(['message' => 'Invalid verification code'], 400);
     }
+}
+
+// ฟังก์ชันที่ใช้สำหรับร้องขอลืมรหัสผ่าน
+public function forgotPassword(Request $request)
+{
+    // ตรวจสอบอีเมลที่ผู้ใช้กรอก
+    $validatedData = $request->validate([
+        'email' => 'required|email|exists:users,email',
+    ]);
+
+    // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
+    $user = User::where('email', $validatedData['email'])->first();
+
+    // สร้างรหัส OTP สำหรับการรีเซ็ตรหัสผ่าน
+    $resetCode = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+
+    // บันทึกโค้ดยืนยันลงในฐานข้อมูล
+    $user->reset_code = $resetCode;
+    $user->save();
+
+    // ส่งอีเมลไปยังผู้ใช้
+    Mail::to($user->email)->send(new VerificationMail($resetCode));
+
+    return response()->json([
+        'message' => 'Please check your email for the reset code.'
+    ]);
+}
+
+// ฟังก์ชันที่ใช้สำหรับยืนยันโค้ดและรีเซ็ตรหัสผ่าน
+public function resetPassword(Request $request)
+{
+    $validatedData = $request->validate([
+        'email' => 'required|email|exists:users,email',
+        'reset_code' => 'required|numeric',
+        'password' => 'required|string|min:6|confirmed',
+    ]);
+
+    // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
+    $user = User::where('email', $validatedData['email'])->first();
+
+    // ตรวจสอบว่าโค้ดรีเซ็ตรหัสผ่านถูกต้องหรือไม่
+    if ($user && $user->reset_code == $validatedData['reset_code']) {
+        // รีเซ็ตรหัสผ่านใหม่
+        $user->password = bcrypt($validatedData['password']);
+        $user->reset_code = null; // ลบโค้ดรีเซ็ตหลังจากใช้งาน
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password has been reset successfully.'
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'Invalid reset code or email.'
+        ], 400);
+    }
+}
+
+
 }

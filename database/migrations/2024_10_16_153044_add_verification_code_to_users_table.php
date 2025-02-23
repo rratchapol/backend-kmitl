@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('verification_code', 4)->nullable(); // เพิ่มคอลัมน์ verification_code
+            $table->string('reset_code', 4)->nullable(); // เพิ่มคอลัมน์ reset_code
+
         });
     }
 
@@ -23,6 +25,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('verification_code');
+            $table->dropColumn('reset_code'); // ลบคอลัมน์ reset_code
+
         });
     }
 };

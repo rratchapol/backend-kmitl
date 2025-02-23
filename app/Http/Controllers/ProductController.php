@@ -213,4 +213,30 @@ class ProductController extends Controller
         $product->delete();
         return response()->json(['message' => 'Product deleted']);
     }
+
+
+    public function searchByTags(Request $request)
+{
+    // รับ tag จาก body ของ request
+    $tagsArray = $request->input('tags');  // เช่น ['electronics', 'computer', '2025']
+    $sellerId = $request->input('seller_id'); // รับ seller_id จาก body หรือ query
+
+    // ตรวจสอบว่า tag และ seller_id ถูกส่งมาหรือไม่
+    if (is_null($tagsArray) || !is_array($tagsArray)) {
+        return response()->json(['error' => 'Invalid or missing tags parameter.'], 400);
+    }
+
+    // ค้นหาสินค้าที่มี tags ตรงกัน และ id ต้องไม่ตรงกับ seller_id
+    $products = Product::where(function($query) use ($tagsArray, $sellerId) {
+        foreach ($tagsArray as $tag) {
+            $query->orWhere('tag', 'like', '%' . $tag . '%');
+        }
+    })
+    ->where('seller_id', '!=', $sellerId) // กรองไม่ให้ seller_id ตรงกับ id
+    ->limit(10) // จำกัดการส่งผลลัพธ์ 10 ชิ้น
+    ->get();
+
+    return response()->json($products);
+}
+
 }
