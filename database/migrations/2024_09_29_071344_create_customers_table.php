@@ -19,7 +19,11 @@ class CreateCustomersTable extends Migration
             $table->string('department'); // แผนก
             $table->string('classyear'); // ปีการศึกษา
             $table->string('role'); // บทบาท
-            $table->string('status')->nullable();
+            // $table->string('status')->nullable();
+            $table->string('guidetag')->nullable();
+            // $table->string('userhistory')->nullable();
+            // $table->string('userpost')->nullable();
+            // $table->string('userproduct')->nullable();
 
             $table->timestamps(); // คอลัมน์ created_at และ updated_at
 

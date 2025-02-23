@@ -20,7 +20,11 @@ class Customer extends Model
         'classyear',
         'role',
         'user_id',
-        'status'
+        'guidetag',
+        // 'userhistory',
+        // 'userpost',
+        // 'userproduct',
+        // 'status'
     ];
 
         // ความสัมพันธ์กับ User
