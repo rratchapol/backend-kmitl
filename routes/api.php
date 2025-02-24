@@ -57,7 +57,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('products/{id}', [ProductController::class, 'update']); // แก้ไขสินค้า
     Route::delete('products/{id}', [ProductController::class, 'destroy']); // ลบสินค้า
     Route::get('productsid/{id}', [ProductController::class, 'look']); // แสดงสินค้าตาม ID
-    Route::post('product/searchbytags', [ProductController::class, 'searchByTags']);
+    // Route::post('product/searchbytags', [ProductController::class, 'searchByTags']);
 
 
 
