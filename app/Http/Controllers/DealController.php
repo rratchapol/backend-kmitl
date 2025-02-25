@@ -161,7 +161,7 @@ class DealController extends Controller
     if ($existingDeal) {
         return response()->json([
             'message' => 'คุณมีดีลที่กำลังรอดำเนินการอยู่ ไม่สามารถซื้อซ้ำได้'
-        ], 400);
+        ], 200);
     }
 
     // สร้างดีลใหม่
