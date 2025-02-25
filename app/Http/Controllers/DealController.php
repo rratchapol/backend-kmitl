@@ -7,6 +7,8 @@ use App\Models\Deal;
 use OpenApi\Annotations as OA;
 use App\Models\Product;
 use App\Models\Recommend;
+use Carbon\Carbon;
+
 class DealController extends Controller
 {
     /**
@@ -18,6 +20,29 @@ class DealController extends Controller
      *     @OA\Response(response=400, description="Invalid request")
      * )
      */
+
+     public function Deal()
+     {
+         return response()->json(Deal::all());
+     }
+
+     public function updateDealStatus()
+    {
+        // คำนวณวันที่ 7 วันก่อนหน้า
+        $sevenDaysAgo = Carbon::now()->subDays(7);
+        // $sevenDaysAgo = Carbon::now()->subMinutes(3);
+
+        // อัปเดตสถานะของดีลที่เป็น "waiting" และเก่ากว่า 7 วัน
+        $updatedCount = Deal::where('status', 'waiting')
+            ->where('created_at', '<', $sevenDaysAgo)
+            ->update(['status' => 'fail']);
+
+        return response()->json([
+            'message' => "อัปเดตสถานะสำเร็จ",
+            'updated_count' => $updatedCount
+        ]);
+}
+
     public function index(Request $request)
     {
         $length = $request->input('length', 10);
@@ -100,19 +125,50 @@ class DealController extends Controller
 
 
 
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'buyer_id' => 'required|exists:users,id',
-            'product_id' => 'required|exists:products,id',
-            'qty' => 'nullable|integer',
-            'deal_date' => 'required|date',
-            'status' => 'required|string'
-        ]);
+    // public function store(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'buyer_id' => 'required|exists:users,id',
+    //         'product_id' => 'required|exists:products,id',
+    //         'qty' => 'nullable|integer',
+    //         'deal_date' => 'required|date',
+    //         'status' => 'required|string'
+    //     ]);
 
-        $deal = Deal::create($validatedData);
-        return response()->json($deal, 201);
+    //     $deal = Deal::create($validatedData);
+    //     return response()->json($deal, 201);
+    // }
+
+    public function store(Request $request)
+{
+    $validatedData = $request->validate([
+        'buyer_id' => 'required|exists:users,id',
+        'product_id' => 'required|exists:products,id',
+        'qty' => 'nullable|integer',
+        'deal_date' => 'required|date',
+        'status' => 'required|string'
+    ]);
+
+    // ตรวจสอบว่ามีดีลที่รออยู่หรือไม่
+    $existingDeal = Deal::where('buyer_id', $validatedData['buyer_id'])
+                        ->where('product_id', $validatedData['product_id'])
+                        ->where('status', 'waiting')
+                        ->exists();
+                        
+
+
+
+    if ($existingDeal) {
+        return response()->json([
+            'message' => 'คุณมีดีลที่กำลังรอดำเนินการอยู่ ไม่สามารถซื้อซ้ำได้'
+        ], 400);
     }
+
+    // สร้างดีลใหม่
+    $deal = Deal::create($validatedData);
+    return response()->json($deal, 201);
+}
+
 
 
     public function update(Request $request, $id)

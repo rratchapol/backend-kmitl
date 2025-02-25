@@ -24,6 +24,11 @@ Route::get('productssss', [ProductController::class, 'index']);
 Route::get('postsss', [PostController::class, 'post']);
 Route::get('postssss', [PostController::class, 'index']);
 
+Route::get('dealsss', [DealController::class, 'Deal']);
+Route::get('/deals/update-status', [DealController::class, 'updateDealStatus']);  //update status 7 วัน
+
+
+
 Route::group(['prefix' => 'auth'], function ($router) {
 
     Route::post('login', [AuthController::class, 'login']);
