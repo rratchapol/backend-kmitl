@@ -60,6 +60,9 @@ class AuthController extends Controller
         }
 
         $customerData = $user->customers;
+        // ดึงข้อมูล user ตาม ID ของผู้ที่ล็อกอิน
+        $dataUser = User::where('id', $user->id)->first();
+
 
         // return $this->respondWithToken($token);
 
@@ -69,6 +72,7 @@ class AuthController extends Controller
             'token' => $token,
             'user_id' => $user->id,
             'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => $dataUser,
             'user_data' => $customerData // ข้อมูลผู้ใช้ที่ได้จากฐานข้อมูล
 
         ]);
