@@ -138,6 +138,7 @@ class CustomerController extends Controller
     public function look($id)
     {
         $customer = Customer::find($id);
+        
 
         if (!$customer) {
             return response()->json(['message' => 'Customer not found'], 404);
@@ -147,6 +148,51 @@ class CustomerController extends Controller
     }
 
 
+    public function calculateClassYear(Request $request)
+    {
+        // ตรวจสอบว่าอีเมลถูกส่งมาหรือไม่
+        $validatedData = $request->validate([
+            'email' => 'required|string|email|max:255',
+        ]);
+    
+        // **ดึงรหัสนักศึกษาจากอีเมล**
+        preg_match('/^(\d{8})@kmitl\.ac\.th$/', $validatedData['email'], $matches);
+        if (!isset($matches[1])) {
+            return response()->json(['error' => 'Invalid KMITL email format'], 400);
+        }
+    
+        $studentCode = $matches[1]; // เช่น 64010724
+    
+        // **คำนวณปีที่เข้าเรียน**
+        $admissionYear = 2500 + intval(substr($studentCode, 0, 2)); // เช่น 64 → 2564
+    
+        // **คำนวณปีปัจจุบัน**
+        $currentYear = date('Y') + 543; // แปลงเป็น พ.ศ.
+        
+        // **ตรวจสอบวันที่**
+        $isAfterJune = date('m-d') >= '06-01'; // เกิน 1 มิ.ย. หรือยัง
+    
+        // **คำนวณชั้นปี**
+        $classYear = ($currentYear - $admissionYear) + ($isAfterJune ? 1 : 0);
+    
+        // **คืนค่าชั้นปีที่ไม่เกิน 4**
+        $classYear = min($classYear, 4);
+    
+        // **หาผู้ใช้จากอีเมลที่ส่งมา**
+        $user = Customer::where('email', $validatedData['email'])->first();
+    
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    
+        // **อัพเดตชั้นปีในฐานข้อมูล**
+        $user->classyear = $classYear;
+        $user->save(); // บันทึกการอัพเดต
+    
+        // ส่งค่าผลลัพธ์เป็น JSON
+        return response()->json(['classyear' => $classYear, 'message' => 'Class year updated successfully']);
+    }
+    
 
     public function update(Request $request, $id)
     {

@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ecaef6b1762b9c5b4b93ca10c2a291bdcb1aaa59',
+        'reference' => '00ee56f9e5a4836542af5ac15823ab17d0e037c4',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -577,7 +577,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ecaef6b1762b9c5b4b93ca10c2a291bdcb1aaa59',
+            'reference' => '00ee56f9e5a4836542af5ac15823ab17d0e037c4',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -1176,6 +1176,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        's-ichikawa/laravel-sendgrid-driver' => array(
+            'pretty_version' => '4.0.9',
+            'version' => '4.0.9.0',
+            'reference' => '8ef615a27acadf63cc4bdb4e78c6cd7f9f0260a1',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../s-ichikawa/laravel-sendgrid-driver',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'sebastian/cli-parser' => array(
             'pretty_version' => '3.0.2',
             'version' => '3.0.2.0',
@@ -1311,11 +1320,44 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'sendgrid/php-http-client' => array(
+            'pretty_version' => '4.1.1',
+            'version' => '4.1.1.0',
+            'reference' => 'ec09bcfccabeb21d69e245a1e1c0e51f2813fc35',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sendgrid/php-http-client',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'sendgrid/sendgrid' => array(
+            'pretty_version' => '8.1.2',
+            'version' => '8.1.2.0',
+            'reference' => '6700d2cf50df38915fa2d9a03affbca58c48599f',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sendgrid/sendgrid',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'sendgrid/sendgrid-php' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '*',
+            ),
+        ),
         'spatie/once' => array(
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '*',
             ),
+        ),
+        'starkbank/ecdsa' => array(
+            'pretty_version' => '0.0.5',
+            'version' => '0.0.5.0',
+            'reference' => '484bedac47bac4012dc73df91da221f0a66845cb',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../starkbank/ecdsa',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'symfony/cache' => array(
             'pretty_version' => 'v7.2.1',

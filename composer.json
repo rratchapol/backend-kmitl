@@ -11,6 +11,8 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "pusher/pusher-php-server": "^7.2",
+        "s-ichikawa/laravel-sendgrid-driver": "^4.0",
+        "sendgrid/sendgrid": "^8.1",
         "symfony/http-client": "^7.1",
         "symfony/mailgun-mailer": "^7.1",
         "tymon/jwt-auth": "^2.1"

@@ -28,7 +28,6 @@ Route::get('dealsss', [DealController::class, 'Deal']);
 Route::get('/deals/update-status', [DealController::class, 'updateDealStatus']);  //update status 7 วัน
 
 
-
 Route::group(['prefix' => 'auth'], function ($router) {
 
     Route::post('login', [AuthController::class, 'login']);
@@ -54,6 +53,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('customers/{id}', [CustomerController::class, 'show']); // แสดงลูกค้ารายละเอียด
     Route::put('customers/{id}', [CustomerController::class, 'update']); // แก้ไขลูกค้า
     Route::delete('customers/{id}', [CustomerController::class, 'destroy']); // ลบลูกค้า
+
+
+    Route::post('/calculateclassyear', [CustomerController::class, 'calculateClassYear']);
+
 
 
     Route::post('getproducts', [ProductController::class, 'index']); // แสดงสินค้าทั้งหมด

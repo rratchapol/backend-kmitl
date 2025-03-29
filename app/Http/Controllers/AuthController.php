@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-
+use  App\Http\Controllers\Log;
 class AuthController extends Controller
 {
 
@@ -147,9 +147,31 @@ class AuthController extends Controller
 {
     $validatedData = $request->validate([
         "name" => "required|string|max:255",
-        "email" => "required|string|email|max:255|unique:users",
+        // "email" => "required|string|email|max:255|unique:users",
+        "email" => "required|string|email|max:255",
         "password" => "required|string|min:6|confirmed",
     ]);
+
+        // 🛑 ตรวจสอบผู้ใช้ที่สมัครแต่ยังไม่ได้ยืนยัน
+        $existingUser = User::where('email', $validatedData['email'])
+            ->whereNull('email_verified_at') // ยังไม่ได้ยืนยัน
+            ->first();
+
+        if ($existingUser) {
+            \Log::info('พบผู้ใช้ที่ยังไม่ได้ยืนยัน:', ['user_id' => $existingUser->id]);
+
+            // เช็คว่าเกิน 1 นาทีแล้วหรือยัง
+            $timeDiff = $existingUser->created_at->diffInSeconds(now());
+            \Log::info("เวลาที่ผ่านไป: {$timeDiff} วินาที");
+            // เช็คว่าเกิน 1 นาทีแล้วหรือยัง
+            if ($existingUser->created_at->diffInSeconds(now()) > 60) {
+                \Log::info('Deleting old unverified user:', ['user_id' => $existingUser->id]);
+                $existingUser->forceDelete();
+            } else {
+                return response()->json(['message' => 'Please verify your email before registering again.'], 400);
+            }
+        }
+
 
     // สร้างรหัส OTP
     $verificationCode = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
@@ -165,6 +187,8 @@ class AuthController extends Controller
 
     // ส่งอีเมลด้วย Mailgun
     Mail::to($user->email)->send(new VerificationMail($verificationCode));
+    // Mail::to($user->email)->send(new VerificationMail($verificationCode));
+
 
     return response()->json([
         'message' => 'Registration successful, please check your email for verification code',
@@ -190,7 +214,8 @@ public function verifyEmail(Request $request)
         $registrationTime = $user->created_at; // เวลาที่สมัคร
 
         // ตรวจสอบว่า OTP หมดอายุหรือไม่ (5 นาที)
-        if ($registrationTime->diffInMinutes(now()) > 5) {
+        if ($registrationTime->diffInMinutes(now()) > 1) {
+            \Log::info('Deleting user because verification expired:', ['user_id' => $user->id]);
             // OTP หมดอายุแล้ว
             // ลบผู้ใช้ที่ยังไม่ได้ยืนยันอีเมล
             $user->delete();
