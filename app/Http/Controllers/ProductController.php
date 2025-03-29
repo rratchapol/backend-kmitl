@@ -126,6 +126,26 @@ class ProductController extends Controller
     }
 
 
+    public function getProductsByTags(Request $request)
+{
+    $validated = $request->validate([
+        'tag' => 'required|array',
+        'tag.*' => 'string'
+    ]);
+
+    $tags = $validated['tag'];
+    $result = [];
+
+    foreach ($tags as $tag) {
+        $products = Product::where('tag', $tag)->take(3)->get();
+        $result[$tag] = $products;
+    }
+
+    return response()->json($result, 200);
+}
+
+
+
 
     public function store(Request $request)
     {
