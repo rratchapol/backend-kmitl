@@ -31,9 +31,7 @@ class PostController extends Controller
 
         // $posts = Post::select($col);
             // ดึงข้อมูลจากตาราง Post พร้อมข้อมูลของ User
-        // $posts = Post::with('user')->select($col);
-        $posts = Post::with('customer')->select($col);
-
+        $posts = Post::with('user')->select($col);
 
 
             // กรองตาม column ที่ส่งมา
@@ -89,7 +87,7 @@ class PostController extends Controller
         public function store(Request $request)
         {
             $validated = $request->validate([
-                'userpost_id' => 'required|exists:users,id',
+                'userpost_id' => 'required|exists:customers,id',
                 'image' => 'required|string',
                 'detail' => 'required|string',
                 'category' => 'required|string',
