@@ -31,7 +31,9 @@ class PostController extends Controller
 
         // $posts = Post::select($col);
             // ดึงข้อมูลจากตาราง Post พร้อมข้อมูลของ User
-        $posts = Post::with('user')->select($col);
+        // $posts = Post::with('user')->select($col);
+        $posts = Post::with('customer')->select($col);
+
 
 
             // กรองตาม column ที่ส่งมา
