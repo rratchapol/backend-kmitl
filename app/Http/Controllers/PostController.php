@@ -87,7 +87,7 @@ class PostController extends Controller
         public function store(Request $request)
         {
             $validated = $request->validate([
-                'userpost_id' => 'required|exists:customers,id',
+                'userpost_id' => 'required|string',
                 'image' => 'required|string',
                 'detail' => 'required|string',
                 'category' => 'required|string',
