@@ -95,17 +95,17 @@ class CustomerController extends Controller
         }
 
         // 🔍 ดึง post_id ที่มี status = 'ok'
-        $postIds = Post::where('userpost_id', $user_id)
+        $postIds = Post::where('id', $user_id)
             ->where('status', 'ok')
             ->pluck('id');
 
         // 🔍 ดึง product_id ที่ลูกค้าขาย ที่มี status = 'ok'
-        $productIds = Product::where('seller_id', $user_id)
+        $productIds = Product::where('id', $user_id)
             ->where('status', 'ok')
             ->pluck('id');
 
         // 🔍 ดึง productdeal_id  ที่มี status = 'success'
-        $dealIds = Deal::where('buyer_id', $user_id)
+        $dealIds = Deal::where('id', $user_id)
             ->where('status', 'success')
             ->pluck('product_id');
 
