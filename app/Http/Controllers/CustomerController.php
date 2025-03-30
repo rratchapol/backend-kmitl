@@ -88,7 +88,7 @@ class CustomerController extends Controller
     //หาจาก id login
     public function show($user_id)
     {
-        $customer = Customer::where('user_id', $user_id)->first();
+        $customer = Customer::where('id', $user_id)->first();
 
         if (!$customer) {
             return response()->json(['id' => 'no'], 404);
