@@ -30,7 +30,7 @@ class Customer extends Model
         // ความสัมพันธ์กับ User
         public function user()
         {
-            return $this->belongsTo(Customer::class);
+            return $this->belongsTo(User::class);
             // return $this->belongsTo(Customer::class, 'userpost_id');
         }
 }
