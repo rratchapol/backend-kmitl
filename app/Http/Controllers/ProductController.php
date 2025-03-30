@@ -137,7 +137,7 @@ class ProductController extends Controller
     }
 
 
-    public function getProductsByTags(Request $request)
+    public function getProductsByTag(Request $request)
 {
     $validated = $request->validate([
         'tag' => 'required|array',
@@ -153,6 +153,20 @@ class ProductController extends Controller
     }
 
     return response()->json($result, 200);
+}
+
+public function getProductsByTags(Request $request)
+{
+    $validated = $request->validate([
+        'tag' => 'required|array',
+        'tag.*' => 'string'
+    ]);
+
+    $tags = $validated['tag'];
+
+    $products = Product::whereIn('tag', $tags)->take(3 * count($tags))->get();
+
+    return response()->json($products, 200);
 }
 
 
