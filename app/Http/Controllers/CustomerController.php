@@ -206,6 +206,7 @@ class CustomerController extends Controller
             'department' => 'sometimes|required|string|max:255',
             'classyear' => 'sometimes|required|string|max:4',
             'role' => 'sometimes|required|string|max:50',
+            'guidetag' => 'nullable|string',
             // 'status' => 'nullable|string',
         ]);
     
