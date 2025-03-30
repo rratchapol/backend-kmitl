@@ -116,6 +116,10 @@ class ChatController extends Controller
     
         // Broadcast Event
         broadcast(new ChatMessageSent($chat));
+
+        // ส่ง Push Notification
+        $event = new ChatMessageSent($chat);
+        $event->sendPushNotification();
     
         return response()->json($chat, 201);
     }

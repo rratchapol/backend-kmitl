@@ -108,6 +108,17 @@ class ProductController extends Controller
             'is_liked' => $isLiked
         ]);
     }
+
+    public function showproduct($id)
+    {
+        $tag = Product::find($id);
+
+        if (!$tag) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        return response()->json($tag);
+    }
     
 
 

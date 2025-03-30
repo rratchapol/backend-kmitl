@@ -10,6 +10,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Pusher\PushNotifications\PushNotifications;
 
 class ChatMessageSent implements ShouldBroadcast
 {
@@ -55,6 +56,58 @@ class ChatMessageSent implements ShouldBroadcast
     {
         return 'ChatMessageSent';
     }
+
+       // เพิ่มการส่ง Push Notification
+    // ฟังก์ชันที่ใช้ Pusher Beams ส่งการแจ้งเตือน
+    public function sendPushNotification()
+    {
+        $beamsClient = new PushNotifications([
+            'instanceId' => 'c9cab783-ea09-43b4-8eeb-d05d43058870',
+            'secretKey' => '5B1CF06684140EEF009AE097CFEF9BCF9090FCBB5BE8C4B2CBE50F0E8B8A9A30',
+        ]);
+    
+        $senderName = $this->chat->sender ? $this->chat->sender->name : 'Unknown';
+    
+        try {
+            $response = $beamsClient->publishToInterests(
+                ['chat.' . $this->chat->receiver_id],
+                [
+                    'apns' => [
+                        'aps' => [
+                            'alert' => [
+                                'title' => 'New message from ' . $senderName,
+                                'body' => $this->chat->message,
+                            ],
+                            'sound' => 'default',
+                        ],
+                    ],
+                    'fcm' => [
+                        'notification' => [
+                            'title' => 'New message from ' . $senderName,
+                            'body' => $this->chat->message,
+                        ],
+                    ],
+                ]
+            );
+    
+            // ตรวจสอบผลลัพธ์ที่ได้รับจาก Pusher Beams
+            \Log::info('Response from Pusher Beams:', (array) $response);
+    
+            // ตรวจสอบสถานะของการส่งการแจ้งเตือน
+            if (isset($response->errors)) {
+                // จัดการกรณีที่มีข้อผิดพลาด
+                \Log::error('Push notification error:', (array) $response->errors);
+            } else {
+                \Log::info('Push notification sent successfully');
+            }
+    
+        } catch (\Exception $e) {
+            // จัดการกรณีที่เกิดข้อผิดพลาดในการติดต่อ Pusher Beams
+            \Log::error('Error sending push notification: ' . $e->getMessage());
+        }
+    }
+    
+    
 }
 
 

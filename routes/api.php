@@ -163,7 +163,7 @@ Route::middleware(['auth:admin_api'])->group(function () {
 
 
     Route::post('product', [ProductController::class, 'index']); // แสดงสินค้าทั้งหมด
-    Route::get('product/{id}', [ProductController::class, 'show']); // แสดงสินค้าตาม ID
+    Route::get('product/{id}', [ProductController::class, 'showproduct']); // แสดงสินค้าตาม ID
     Route::put('product/{id}', [ProductController::class, 'update']); // แก้ไขสินค้า
     Route::delete('product/{id}', [ProductController::class, 'destroy']); // ลบสินค้า
     Route::get('productid/{id}', [ProductController::class, 'look']); // แสดงสินค้าตาม ID คนขาย
@@ -183,7 +183,7 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::delete('categorie/{id}', [CategoryController::class, 'destroy']); // ลบ category
 
 
-    Route::get('/tags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
+    Route::post('/gettags', [TagController::class, 'index']); // ดูแท็กทั้งหมด
     Route::post('/tags', [TagController::class, 'store']); // สร้างแท็กใหม่
     Route::get('/tags/{id}', [TagController::class, 'show']); // ดูแท็กเดียว
     Route::get('tagsbycategorie/{id}', [CategoryController::class, 'getTags']); 
@@ -198,7 +198,7 @@ Route::middleware(['auth:admin_api'])->group(function () {
     Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
 
 
-    Route::get('/checkpoduct', [CheckProductController::class, 'index']);
+    Route::post('/getcheckpoduct', [CheckProductController::class, 'index']);
     Route::post('/checkpoduct', [CheckProductController::class, 'store']);
     Route::get('/checkpoduct/{id}', [CheckProductController::class, 'show']);
     Route::put('/checkpoduct/{id}', [CheckProductController::class, 'update']);

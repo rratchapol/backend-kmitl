@@ -45,7 +45,7 @@
 
     <script>
         // ตั้งค่าผู้ใช้ปัจจุบัน (เปลี่ยนเป็นค่า dynamic ได้)
-        const currentUserId = 70; // สมมติว่าผู้ใช้ที่ล็อกอินคือ user_id = 1
+        const currentUserId = 2; // สมมติว่าผู้ใช้ที่ล็อกอินคือ user_id = 1
 
         // เชื่อมต่อกับ Pusher
         const pusher = new Pusher('e5bdc31db695b897c05a', {
@@ -54,7 +54,7 @@
         });
 
         // Subscribe ไปยัง Channel 'chat.1.2'
-        const channel = pusher.subscribe('chat.70.80'); // ใช้ชื่อ Channel ที่ตรงกับข้อมูลที่คุณส่งมา
+        const channel = pusher.subscribe('chat.1.2'); // ใช้ชื่อ Channel ที่ตรงกับข้อมูลที่คุณส่งมา
 
         // ฟัง Event 'ChatMessageSent'
         channel.bind('ChatMessageSent', function(data) {
